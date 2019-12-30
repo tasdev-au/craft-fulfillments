@@ -71,7 +71,7 @@ class OrderFulfillments extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '1.0.1';
+    public $schemaVersion = '1.0.0';
 
 
     // Traits
@@ -98,7 +98,6 @@ class OrderFulfillments extends Plugin
         $this->_registerEventHandlers();
         $this->_registerCpRoutes();
         $this->_registerPermissions();
-        // $this->_registerFieldTypes();
     }
 
     /**
@@ -210,16 +209,6 @@ class OrderFulfillments extends Plugin
          */
         Event::on(Order::class, Order::EVENT_DEFINE_BEHAVIORS, function (DefineBehaviorsEvent $event) {
             $event->behaviors[] = OrderFulfillmentsBehavior::class;
-        });
-    }
-
-    /**
-     * Register the field types supplied the plugin.
-     */
-    private function _registerFieldTypes()
-    {
-        Event::on(Fields::class, Fields::EVENT_REGISTER_FIELD_TYPES, function (RegisterComponentTypesEvent $event) {
-            $event->types[] = FulfillmentsField::class;
         });
     }
 
