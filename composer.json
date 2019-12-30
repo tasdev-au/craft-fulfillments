@@ -11,10 +11,15 @@
         "fulfillments",
         "shopify",
         "commerce",
-        "orders"
+        "orders",
+        "shipping",
+        "ship",
+        "tracking",
+        "track",
+        "post"
     ],
     "support": {
-        "docs": "https://github.com/tasdev-au/craft-fulfillments/blob/master/README.md",
+        "docs": "https://github.com/tasdev-au/craft-fulfillments/blob/craft-3/README.md",
         "issues": "https://github.com/tasdev-au/craft-fulfillments/issues"
     },
     "license": "MIT",
@@ -38,7 +43,7 @@
         "handle": "order-fulfillments",
         "hasCpSettings": true,
         "hasCpSection": true,
-        "changelogUrl": "https://raw.githubusercontent.com/tasdev-au/craft-fulfillments/master/CHANGELOG.md",
+        "changelogUrl": "https://raw.githubusercontent.com/tasdev-au/craft-fulfillments/craft-3/CHANGELOG.md",
         "components": {
             "fulfillments": "tasdev\\orderfulfillments\\services\\Fulfillments",
             "fulfillmentsLines": "tasdev\\orderfulfillments\\services\\FulfillmentLines",
