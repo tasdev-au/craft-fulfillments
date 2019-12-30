@@ -1,0 +1,92 @@
+{% import '_includes/forms' as forms %}
+
+<div class="content">
+    <div class="main">
+        <form method="post" accept-charset="UTF-8" novalidate>
+            <input type="hidden" name="action" value="fulfillments/fulfillments/save">
+            <input type="hidden" name="orderId" value="{{ fulfillment.orderId }}" />
+
+            {{ csrfInput() }}
+
+            <h2>{{ 'Create Fulfillment' | t('order-fulfillments') }}</h2>
+
+            <hr />
+
+            <h3>{{ 'Quantity to Fulfill' | t('order-fulfillments') }}</h3>
+
+            <table class="data fullwidth collapsible">
+                <thead>
+                    <tr>
+                        <th scope="col">{{ 'Item' | t('order-fulfillments') }}</th>
+                        <th scope="col">{{ 'Quantity' | t('order-fulfillments') }}</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% namespace 'fulfillmentLines' %}
+                        {% for fulfillmentLine in fulfillment.fulfillmentLines %}
+                            {% set lineItem = fulfillmentLine.lineItem %}
+                            {% set fulfillableQty = craft.fulfillments
+                                .getPlugin()
+                                .getFulfillmentLines()
+                                .getFulfillableQty(lineItem) %}
+
+                            <tr class="infoRow">
+                                <td data-title="{{ 'Item' | t('order-fulfillments') }}">
+                                    <a class="purchasable-link" href="{{ lineItem.purchasable.cpEditUrl }}">{{ lineItem.purchasable.title }}</a>
+
+                                    {% set errors = fulfillmentLine.getErrors('fulfilledQty') ?? null %}
+                                    {% if errors %}
+                                        {% include '_includes/forms/errorList' with { errors: errors } only %}
+                                    {% endif %}
+                                </td>
+
+                                <td data-title="{{ 'Quantity' | t('order-fulfillments') }}">
+                                    <div class="flex">
+                                        {{ forms.text({
+                                            type: 'number',
+                                            size: '4',
+                                            name: lineItem.id,
+                                            value: fulfillmentLine.fulfilledQty,
+                                            max: fulfillableQty,
+                                        }) }}
+
+                                        <span class="flex-grow">
+                                            {{ 'of {number}' | t('order-fulfillments', {
+                                                number: fulfillableQty
+                                            }) }}
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endnamespace %}
+                </tbody>
+            </table>
+
+            <hr />
+
+            <h3>{{ 'Tracking Information' | t('order-fulfillments') }}</h3>
+
+            <div class="flex">
+                <div class="flex-grow">
+                    {{ forms.textField({
+                        label: 'Tracking Number' | t('order-fulfillments'),
+                        name: 'trackingNumber',
+                        value: fulfillment.trackingNumber,
+                        errors: fulfillment.getErrors('trackingNumber') ?? null
+                    }) }}
+                </div>
+
+                <div class="flex-grow">
+                    {{ forms.textField({
+                        label: 'Tracking Carrier' | t('order-fulfillments'),
+                        name: 'trackingCarrier',
+                        value: fulfillment.trackingCarrier,
+                        errors: fulfillment.getErrors('trackingCarrier') ?? null
+                    }) }}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

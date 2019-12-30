@@ -1,0 +1,21 @@
+{
+  "name": "craft-fulfillments",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:tasdev-au/craft-fulfillments.git",
+  "author": "Jayden Smith <jayden@tas.dev>",
+  "license": "MIT",
+  "devDependencies": {
+    "cross-env": "^6.0.3",
+    "laravel-mix": "^5.0.1",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "scripts": {
+    "dev": "npm run development",
+    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "npm run development -- --watch",
+    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "prod": "npm run production",
+    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+  }
+}

@@ -1,0 +1,61 @@
+{% import '_includes/forms' as forms %}
+
+<div id="{{ id }}" class="fulfillments" {%- if block('attr') is defined %} {{ block('attr') }}{% endif %}>
+    {% for fulfillment in fulfillments %}
+        <div class="pane">
+            <table class="data fullwidth collapsible">
+                <thead>
+                    <tr>
+                        <th scope="col">{{ 'Item' | t('order-fulfillments') }}</th>
+                        <th scope="col">{{ 'Quantity' | t('order-fulfillments') }}</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for fulfillmentLine in fulfillment.fulfillmentLines %}
+                        {% set lineItem = fulfillmentLine.lineItem %}
+
+                        <tr class="infoRow">
+                            <td data-title="{{ 'Item' | t('order-fulfillments') }}">
+                                <a class="purchasable-link" href="{{ lineItem.purchasable.cpEditUrl }}">{{ lineItem.purchasable.title }}</a>
+                            </td>
+
+                            <td data-title="{{ 'Quantity' | t('order-fulfillments') }}">
+                                {{ fulfillmentLine.fulfilledQty }} of {{ lineItem.qty }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <hr />
+
+            <div class="flex">
+                <div class="flex-grow">
+                    {{ forms.textField({
+                        label: 'Tracking Number' | t('order-fulfillments'),
+                        value: fulfillment.trackingNumber,
+                        readonly: true
+                    }) }}
+                </div>
+
+                <div class="flex-grow">
+                    {{ forms.textField({
+                        label: 'Tracking Carrier' | t('order-fulfillments'),
+                        value: fulfillment.trackingCarrier,
+                        readonly: true
+                    }) }}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    {% set hasUnfulfilled = craft.fulfillments
+        .getPlugin()
+        .getFulfillmentLines()
+        .getUnfulfilledLineItems(element) | length > 0 %}
+
+    {% if hasUnfulfilled %}
+        <div class="btn add icon dashed">{{ 'New fulfillment' | t('order-fulfillments') }}</div>
+    {% endif %}
+</div>

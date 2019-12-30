@@ -1,0 +1,115 @@
+{% import '_includes/forms' as forms -%}
+
+{%- set content -%}
+    <div id="fulfillmentsTab">
+        {% for fulfillment in order.fulfillments %}
+            <div class="pane">
+                <div class="flex flex-nowrap">
+                    <div class="flex-grow">
+                        <h3>{{ 'Fulfillment {index}' | t('order-fulfillments', { index: loop.index }) }}</h3>
+                    </div>
+
+                    {% if currentUser.can('order-fulfillments-deleteFulfillments') %}
+                        <form method="post">
+                            {{ csrfInput() }}
+                            <a class="small btn submit formsubmit"
+                               data-action="order-fulfillments/fulfillments/delete"
+                               data-confirm="{{ 'Are you sure you want to delete this fulfillment?' | t('order-fulfillments') }}"
+                               data-redirect="{{ order.cpEditUrl | hash }}"
+                               data-param="id"
+                               data-value="{{ fulfillment.id }}">{{ 'Delete' | t('order-fulfillments') }}</a>
+                        </form>
+                    {% endif %}
+                </div>
+
+                <hr />
+
+                <table class="data fullwidth collapsible">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ 'Item' | t('order-fulfillments') }}</th>
+                            <th scope="col">{{ 'Quantity' | t('order-fulfillments') }}</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for fulfillmentLine in fulfillment.fulfillmentLines %}
+                            {% set lineItem = fulfillmentLine.lineItem %}
+
+                            <tr class="infoRow">
+                                <td data-title="{{ 'Item' | t('order-fulfillments') }}">
+                                    <a class="purchasable-link" href="{{ lineItem.purchasable.cpEditUrl }}">{{ lineItem.purchasable.title }}</a>
+                                </td>
+
+                                <td data-title="{{ 'Quantity' | t('order-fulfillments') }}">
+                                    {{ fulfillmentLine.fulfilledQty }} of {{ lineItem.qty }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <hr />
+
+                <div class="flex">
+                    <div class="flex-grow">
+                        {{ forms.textField({
+                            label: 'Tracking Number' | t('order-fulfillments'),
+                            value: fulfillment.trackingNumber,
+                            readonly: true
+                        }) }}
+                    </div>
+
+                    <div class="flex-grow">
+                        {{ forms.selectField({
+                            label: 'Tracking Carrier' | t('order-fulfillments'),
+                            class: 'fullwidth',
+                            value: fulfillment.trackingCarrierClass,
+                            options: fulfillmentCarriers,
+                            disabled: true
+                        }) }}
+                    </div>
+                </div>
+
+                {% if fulfillment.trackingCarrier %}
+                    <div>
+                        {{ forms.textField({
+                            label: 'Tracking URL' | t('order-fulfillments'),
+                            value: fulfillment.trackingCarrier.trackingUrl,
+                            readonly: true
+                        }) }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        {% set hasUnfulfilled = craft.fulfillments
+            .getPlugin()
+            .getFulfillmentLines()
+            .getUnfulfilledLineItems(order) | length > 0 %}
+
+        {% if currentUser.can('order-fulfillments-createFulfillments') and hasUnfulfilled %}
+            <div id="new-fulfillment" class="hidden">
+                <div
+                    class="btn newfulfillment icon dashed"
+                    data-lines="{{ fulfillmentLines | json_encode }}"
+                    data-carriers="{{ fulfillmentCarriers | json_encode }}">{{ 'New fulfillment' | t('order-fulfillments') }}</div>
+            </div>
+        {% endif %}
+    </div>
+{%- endset -%}
+
+{% do view.registerAssetBundle('tasdev\\orderfulfillments\\assetbundles\\fulfillments\\FulfillmentsAsset') %}
+
+{% js %}
+    var $tab = $('{{ content | e('js') }}');
+    $tab.toggleClass('hidden', location.hash !== '#fulfillmentsTab');
+
+    $('#content').append($tab);
+
+    $(document).ready(function () {
+        new Craft.Fulfillments.CreateFulfillment({
+            orderId: {{ orderId | e('js') }}
+        });
+    });
+{% endjs %}

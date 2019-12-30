@@ -1,0 +1,28 @@
+{% import '_includes/forms' as forms %}
+
+{{ forms.selectField({
+    first: true,
+    label: 'Fulfilled Order Status' | t('order-fulfillments'),
+    instructions: 'Choose the order status that will be set when an order is fulfilled, or blank to not automatically set the status.' | t('order-fulfillments'),
+    id: 'fulfilledStatus',
+    name: 'fulfilledStatus',
+    value: settings.fulfilledStatus,
+    options: statuses,
+}) }}
+
+{{ forms.selectField({
+    label: 'Partially Fulfilled Order Status' | t('order-fulfillments'),
+    instructions: 'Choose the order status that will be set when an order is partially fulfilled, or blank to not automatically set the status.' | t('order-fulfillments'),
+    id: 'partiallyFulfilledStatus',
+    name: 'partiallyFulfilledStatus',
+    value: settings.partiallyFulfilledStatus,
+    options: statuses,
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Resend Partially Fulfilled Status Emails' | t('order-fulfillments'),
+    instructions: 'Enable this option to resend the order status email for partial fulfillments when the order status is already partially fulfilled. By default Craft Commerce does not send order status emails again if the status does not change.' | t('order-fulfillments'),
+    id: 'resendPartiallyFulfilledEmail',
+    name: 'resendPartiallyFulfilledEmail',
+    on: settings.resendPartiallyFulfilledEmail,
+}) }}

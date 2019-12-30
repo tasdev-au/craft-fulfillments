@@ -1,0 +1,49 @@
+{
+    "name": "tasdev-au/craft-fulfillments",
+    "description": "Add Shopify like fulfillments to your Craft Commerce orders.",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "fulfillments",
+        "shopify",
+        "commerce",
+        "orders"
+    ],
+    "support": {
+        "docs": "https://github.com/tasdev-au/craft-fulfillments/blob/master/README.md",
+        "issues": "https://github.com/tasdev-au/craft-fulfillments/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jayden Smith",
+            "homepage": "https://tas.dev"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.1",
+        "craftcms/commerce": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "tasdev\\orderfulfillments\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Fulfillments",
+        "handle": "order-fulfillments",
+        "hasCpSettings": true,
+        "hasCpSection": true,
+        "changelogUrl": "https://raw.githubusercontent.com/tasdev-au/craft-fulfillments/master/CHANGELOG.md",
+        "components": {
+            "fulfillments": "tasdev\\orderfulfillments\\services\\Fulfillments",
+            "fulfillmentsLines": "tasdev\\orderfulfillments\\services\\FulfillmentLines",
+            "carriers": "tasdev\\orderfulfillments\\services\\Carriers"
+        },
+        "class": "tasdev\\orderfulfillments\\OrderFulfillments"
+    }
+}
