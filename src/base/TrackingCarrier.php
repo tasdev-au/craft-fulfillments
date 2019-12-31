@@ -23,7 +23,7 @@ abstract class TrackingCarrier extends Model
     // =========================================================================
 
     /**
-     * @var string the display name of the carrier
+     * @var string the shipment tracking number
      */
     public $trackingNumber;
 

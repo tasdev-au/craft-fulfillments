@@ -19,7 +19,7 @@
         "post"
     ],
     "support": {
-        "docs": "https://github.com/tasdev-au/craft-fulfillments/blob/craft-3/README.md",
+        "docs": "https://tas.dev/plugins/fulfillments/installation",
         "issues": "https://github.com/tasdev-au/craft-fulfillments/issues"
     },
     "license": "MIT",
