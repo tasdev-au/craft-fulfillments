@@ -14,9 +14,12 @@ use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
 use craft\commerce\Plugin as Commerce;
 use craft\events\DefineBehaviorsEvent;
+use craft\events\PluginEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\events\TemplateEvent;
 use craft\helpers\ArrayHelper;
+use craft\helpers\UrlHelper;
+use craft\services\Plugins;
 use craft\services\UserPermissions;
 use craft\web\View;
 use tasdev\orderfulfillments\behaviors\OrderFulfillmentsBehavior;
@@ -158,9 +161,7 @@ class OrderFulfillments extends Plugin
     {
         if (Craft::$app->getUser()->checkPermission('order-fulfillments-viewFulfillments') ||
             Craft::$app->getUser()->checkPermission('order-fulfillments-createFulfillments')) {
-            /**
-             * Add fulfillments tab to order edit page.
-             */
+            // Add fulfillments tab to order edit page.
             Event::on(View::class, View::EVENT_BEFORE_RENDER_PAGE_TEMPLATE, function (TemplateEvent $event) {
                 if ($event->template === 'commerce/orders/_edit') {
                     $event->variables['tabs'][] = [
@@ -171,9 +172,7 @@ class OrderFulfillments extends Plugin
                 }
             });
 
-            /**
-             * Uses order edit template hook to inject order fulfillments.
-             */
+            // Uses order edit template hook to inject order fulfillments.
             Craft::$app->view->hook('cp.commerce.order.edit', function (&$context) {
                 /* @var Order $order */
                 $order = $context['order'];
@@ -204,11 +203,20 @@ class OrderFulfillments extends Plugin
             });
         }
 
-        /**
-         * Add fulfillments behavior to access fulfillments like $order->fulfillments.
-         */
+        // Add fulfillments behavior to access fulfillments like $order->fulfillments.
         Event::on(Order::class, Order::EVENT_DEFINE_BEHAVIORS, function (DefineBehaviorsEvent $event) {
             $event->behaviors[] = OrderFulfillmentsBehavior::class;
+        });
+
+        // Redirect after plugin install
+        Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN, function (PluginEvent $event) {
+            if ($event->plugin === $this) {
+                if (Craft::$app->getRequest()->isCpRequest) {
+                    Craft::$app->getResponse()->redirect(
+                        UrlHelper::cpUrl('settings/plugins/order-fulfillments')
+                    )->send();
+                }
+            }
         });
     }
 
