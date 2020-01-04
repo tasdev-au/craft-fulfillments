@@ -4,7 +4,7 @@ Fulfillments is a plugin for Craft CMS to let you create "Shopify like" fulfillm
 <img width="500" src="https://tas.dev/uploads/plugins/fulfillments/screenshot-1.png" style="box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-radius: 4px; border: 1px solid rgba(0,0,0,0.12);">
 
 ## Documentation
-Read the full documentation (here)[https://tas.dev/plugins/fulfillments/installation].
+Read the full documentation [here](https://tas.dev/plugins/fulfillments/installation).
 
 ## Features
 
