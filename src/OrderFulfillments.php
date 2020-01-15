@@ -18,6 +18,7 @@ use craft\events\PluginEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\events\TemplateEvent;
 use craft\helpers\ArrayHelper;
+use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\services\Plugins;
 use craft\services\UserPermissions;
@@ -180,12 +181,11 @@ class OrderFulfillments extends Plugin
 
                 /* @var LineItem $lineItem */
                 foreach ($order->getLineItems() as $lineItem) {
-                    $purchasable = $lineItem->getPurchasable();
                     $fulfillableQty = $this->getFulfillmentLines()->getFulfillableQty($lineItem);
 
                     $fulfillmentLines[] = [
                         'id' => $lineItem->id,
-                        'title' => $purchasable->title,
+                        'title' => $lineItem->getDescription(),
                         'qty' => $fulfillableQty
                     ];
                 }

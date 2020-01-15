@@ -14,6 +14,8 @@ use Craft;
 use craft\base\Model;
 use craft\commerce\models\LineItem;
 use craft\commerce\Plugin as Commerce;
+use craft\helpers\Html;
+use craft\helpers\Json;
 use tasdev\orderfulfillments\OrderFulfillments;
 
 
@@ -72,6 +74,24 @@ class FulfillmentLine extends Model
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * Returns the purchasable name, or if there's no purchasable, the snapshot description.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        $lineItem = $this->getLineItem();
+
+        $purchasable = $lineItem->getPurchasable();
+        if ($purchasable) {
+            return $purchasable->getDescription();
+        }
+
+        $snapshot = Json::decodeIfJson($lineItem->snapshot);
+        return Html::decode($snapshot['description']);
+    }
 
     /**
      * Gets the fulfillment.

@@ -17,7 +17,11 @@
 
                         <tr class="infoRow">
                             <td data-title="{{ 'Item' | t('order-fulfillments') }}">
-                                <a class="purchasable-link" href="{{ lineItem.purchasable.cpEditUrl }}">{{ lineItem.purchasable.title }}</a>
+                                {% if lineItem.purchasable %}
+                                    <a class="purchasable-link" href="{{ lineItem.purchasable.cpEditUrl }}">{{ fulfillmentLine }}</a>
+                                {% else %}
+                                    <span class="purchasable-link">{{ fulfillmentLine }}</span>
+                                {% endif %}
                             </td>
 
                             <td data-title="{{ 'Quantity' | t('order-fulfillments') }}">
