@@ -17,6 +17,7 @@ use craft\base\Component;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\models\LineItem;
 use tasdev\orderfulfillments\events\FulfillmentLineEvent;
+use tasdev\orderfulfillments\events\FulfillableQtyEvent;
 use tasdev\orderfulfillments\models\Fulfillment;
 use tasdev\orderfulfillments\models\FulfillmentLine;
 use tasdev\orderfulfillments\records\FulfillmentLine as FulfillmentLineRecord;
@@ -71,6 +72,11 @@ class FulfillmentLines extends Component
      * @event FulfillmentLineEvent This event is raised when a new fulfillment line is created
      */
     const EVENT_CREATE_FULFILLMENT_LINE = 'createFulfillmentLine';
+
+    /**
+     * @event FulfillableQtyEvent This event is raised when the fulfillable qty is requested
+     */
+    const EVENT_GET_FULFILLABLE_QTY = 'getFulfillableQty';
 
 
     // Public Methods
@@ -157,15 +163,26 @@ class FulfillmentLines extends Component
      * Gets the fulfillable quantity for a line item.
      *
      * @param LineItem $lineItem
+     * @param Boolean $limitToStock
      * @return int
      */
-    public function getFulfillableQty(LineItem $lineItem): int
+    public function getFulfillableQty(LineItem $lineItem, $limitToStock = false): int
     {
         $fulfillmentItems = $this->getFulfillmentLinesByLineItem($lineItem);
 
         $quantity = $lineItem->qty;
         foreach ($fulfillmentItems as $fulfillmentItem) {
             $quantity -= $fulfillmentItem->fulfilledQty;
+        }
+
+        // Raise a 'getFulfillableQty' event
+        if ($this->hasEventHandlers(self::EVENT_GET_FULFILLABLE_QTY)) {
+            $this->trigger(self::EVENT_GET_FULFILLABLE_QTY, new FulfillableQtyEvent([
+                'lineItem' => $lineItem,
+                'fulfillmentItems' => $fulfillmentItems,
+                'quantity' => $quantity,
+                'limitToStock' => $limitToStock,
+            ]));
         }
 
         return $quantity;

@@ -156,7 +156,7 @@ class FulfillmentsController extends Controller
             $order = $fulfillment->getOrder();
 
             foreach ($order->getLineItems() as $lineItem) {
-                $fulfillableQty = $fulfillmentLinesService->getFulfillableQty($lineItem);
+                $fulfillableQty = $fulfillmentLinesService->getFulfillableQty($lineItem, $limitToStock = true);
                 $fulfillmentLine = $fulfillmentLinesService->createFulfillmentLine($lineItem, $fulfillableQty);
                 $fulfillment->addFulfillmentLine($fulfillmentLine);
             }
