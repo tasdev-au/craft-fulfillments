@@ -185,7 +185,7 @@ class OrderFulfillments extends Plugin
 
                     $fulfillmentLines[] = [
                         'id' => $lineItem->id,
-                        'title' => $lineItem->getDescription(),
+                        'title' => $lineItem->description ?? $lineItem->getDescription(),
                         'qty' => $fulfillableQty
                     ];
                 }
