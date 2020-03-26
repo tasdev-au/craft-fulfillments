@@ -53,6 +53,12 @@ class Fulfillment extends Model
      */
     public $uid;
 
+    /**
+     * @var DateTime|null
+     * @since 2.2
+     */
+    public $dateCreated;
+
 
     // Private Properties
     // =========================================================================
