@@ -29,7 +29,7 @@
                             {% set fulfillableQty = craft.fulfillments
                                 .getPlugin()
                                 .getFulfillmentLines()
-                                .getFulfillableQty(lineItem) %}
+                                .getFulfillableQty(lineItem, limitToStock = true) %}
 
                             <tr class="infoRow">
                                 <td data-title="{{ 'Item' | t('order-fulfillments') }}">
