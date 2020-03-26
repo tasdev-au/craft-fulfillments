@@ -17,7 +17,7 @@ export default Garnish.Modal.extend({
             <input type="hidden" name="orderId" value="${orderId}" />
 
             <h2 class="first">${Craft.t('order-fulfillments', 'New Fulfillment')}</h2>
-            
+
             <table class="data fullwidth collapsible">
                 <thead>
                     <tr>
@@ -28,11 +28,11 @@ export default Garnish.Modal.extend({
 
                 <tbody>${this._getRows(lines)}</tbody>
             </table>
-            
+
             <hr />
-            
+
             <h3>${Craft.t('order-fulfillments', 'Tracking Information')}</h3>
-            
+
             <div class="flex">
                 <div class="flex-grow">
                     <div class="field">
@@ -96,10 +96,10 @@ export default Garnish.Modal.extend({
                                value="${line.qty}"
                                autocomplete="off"
                                min="0"
-                               max="${line.qty}" />
-                               
+                               max="${line.maxQty}" />
+
                         <span class="flex-grow">
-                            ${Craft.t('order-fulfillments', 'of {number}', { number: line.qty })}
+                            ${Craft.t('order-fulfillments', 'of {number}', { number: line.maxQty })}
                         </span>
                     </div>
                 </td>
