@@ -175,17 +175,19 @@ class FulfillmentLines extends Component
             $quantity -= $fulfillmentItem->fulfilledQty;
         }
 
+        $event = new FulfillableQtyEvent([
+            'lineItem' => $lineItem,
+            'fulfillmentItems' => $fulfillmentItems,
+            'quantity' => $quantity,
+            'limitToStock' => $limitToStock,
+        ]);
+
         // Raise a 'getFulfillableQty' event
         if ($this->hasEventHandlers(self::EVENT_GET_FULFILLABLE_QTY)) {
-            $this->trigger(self::EVENT_GET_FULFILLABLE_QTY, new FulfillableQtyEvent([
-                'lineItem' => $lineItem,
-                'fulfillmentItems' => $fulfillmentItems,
-                'quantity' => $quantity,
-                'limitToStock' => $limitToStock,
-            ]));
+            $this->trigger(self::EVENT_GET_FULFILLABLE_QTY, $event);
         }
 
-        return $quantity;
+        return $event->quantity;
     }
 
     /**
