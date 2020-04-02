@@ -10,15 +10,15 @@
 
 namespace tasdev\orderfulfillments\models;
 
+
+use Craft;
+use DateTime;
+use craft\base\Model;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
 use tasdev\orderfulfillments\base\TrackingCarrier;
 use tasdev\orderfulfillments\OrderFulfillments;
 
-use DateTime;
-
-use Craft;
-use craft\base\Model;
 
 /**
  * @author    Jayden Smith
@@ -57,9 +57,15 @@ class Fulfillment extends Model
 
     /**
      * @var DateTime|null
-     * @since 2.2
+     * @since 1.1
      */
     public $dateCreated;
+
+    /**
+     * @var DateTime|null
+     * @since 1.1
+     */
+    public $dateUpdated;
 
 
     // Private Properties

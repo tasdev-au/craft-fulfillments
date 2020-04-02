@@ -106,6 +106,7 @@ class FulfillmentsController extends Controller
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
+     * @throws \yii\base\Exception
      */
     private function _getFulfillmentFormHtml(Fulfillment $fulfillment): string
     {
@@ -155,10 +156,8 @@ class FulfillmentsController extends Controller
         } else {
             $order = $fulfillment->getOrder();
 
-            $limitToStock = true;
-
             foreach ($order->getLineItems() as $lineItem) {
-                $fulfillableQty = $fulfillmentLinesService->getFulfillableQty($lineItem, $limitToStock);
+                $fulfillableQty = $fulfillmentLinesService->getFulfillableQty($lineItem, true);
                 $fulfillmentLine = $fulfillmentLinesService->createFulfillmentLine($lineItem, $fulfillableQty);
                 $fulfillment->addFulfillmentLine($fulfillmentLine);
             }

@@ -285,6 +285,8 @@ class Fulfillments extends Component
                 'orderId',
                 'trackingNumber',
                 'trackingCarrierClass',
+                'dateCreated',
+                'dateUpdated',
                 'uid',
             ])
             ->from(['{{%orderfulfillments_fulfillments}}']);

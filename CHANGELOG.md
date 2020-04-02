@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.1 - 2020-04-03
+### Added
+- New `FulfillableQtyEvent` event (thanks [@moldedjelly](https://github.com/moldedjelly))
+- `dateCreated` and `dateUpdated` added to fulfillment model
+
 ## 1.0.3 - 2020-03-25
 ### Fixed
 - Fixed issue caused by the `getDescription` method being removed from the LineItem model.
