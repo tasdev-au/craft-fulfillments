@@ -182,7 +182,7 @@ class OrderFulfillments extends Plugin
                 /* @var LineItem $lineItem */
                 foreach ($order->getLineItems() as $lineItem) {
                     $fulfillableQty = $this->getFulfillmentLines()->getFulfillableQty($lineItem, $limitToStock = true);
-                    $maxfulfillableQty = $this->getFulfillmentLines()->getFulfillableQty($lineItem);
+                    $maxfulfillableQty = $this->getFulfillmentLines()->getFulfillableQty($lineItem, $limitToStock = false, $getMaxQty = true);
 
                     $fulfillmentLines[] = [
                         'id' => $lineItem->id,

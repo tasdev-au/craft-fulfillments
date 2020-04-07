@@ -35,6 +35,10 @@
                     <tbody>
                         {% for fulfillmentLine in fulfillment.fulfillmentLines %}
                             {% set lineItem = fulfillmentLine.lineItem %}
+                            {% set maxQty = craft.fulfillments
+                                .getPlugin()
+                                .getFulfillmentLines()
+                                .getFulfillableQty(lineItem, false, true) %}
 
                             <tr class="infoRow">
                                 <td data-title="{{ 'Item' | t('order-fulfillments') }}">
@@ -46,7 +50,7 @@
                                 </td>
 
                                 <td data-title="{{ 'Quantity' | t('order-fulfillments') }}">
-                                    {{ fulfillmentLine.fulfilledQty }} of {{ lineItem.qty }}
+                                    {{ fulfillmentLine.fulfilledQty }} of {{ maxQty }}
                                 </td>
                             </tr>
                         {% endfor %}

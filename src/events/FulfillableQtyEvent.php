@@ -46,5 +46,10 @@ class FulfillableQtyEvent extends CancelableEvent
      */
     public $limitToStock;
 
+    /**
+     * @var boolean to retrieve the max quantity of an item
+     */
+    public $getMaxQty;
+
 
 }

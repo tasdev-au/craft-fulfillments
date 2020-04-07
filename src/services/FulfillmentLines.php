@@ -166,13 +166,15 @@ class FulfillmentLines extends Component
      * @param Boolean $limitToStock
      * @return int
      */
-    public function getFulfillableQty(LineItem $lineItem, $limitToStock = false): int
+    public function getFulfillableQty(LineItem $lineItem, $limitToStock = false, $getMaxQty = false): int
     {
         $fulfillmentItems = $this->getFulfillmentLinesByLineItem($lineItem);
 
         $quantity = $lineItem->qty;
-        foreach ($fulfillmentItems as $fulfillmentItem) {
-            $quantity -= $fulfillmentItem->fulfilledQty;
+        if (!$getMaxQty) {
+            foreach ($fulfillmentItems as $fulfillmentItem) {
+                $quantity -= $fulfillmentItem->fulfilledQty;
+            }
         }
 
         $event = new FulfillableQtyEvent([
@@ -180,6 +182,7 @@ class FulfillmentLines extends Component
             'fulfillmentItems' => $fulfillmentItems,
             'quantity' => $quantity,
             'limitToStock' => $limitToStock,
+            'getMaxQty' => $getMaxQty,
         ]);
 
         // Raise a 'getFulfillableQty' event

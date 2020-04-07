@@ -153,7 +153,7 @@ class FulfillmentLine extends Model
             ['fulfilledQty', function($attribute) {
                 $maxQty = OrderFulfillments::getInstance()
                     ->getFulfillmentLines()
-                    ->getFulfillableQty($this->getLineItem());
+                    ->getFulfillableQty($this->getLineItem(), false, true);
 
                 if ($this->$attribute > $maxQty) {
                     $this->addError($attribute, Craft::t('order-fulfillments', 'You can only fulfill {number} of this item.', [
