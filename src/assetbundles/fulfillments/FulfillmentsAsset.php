@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2019 Jayden Smith
  */
 
-namespace tasdev\orderfulfillments\assetbundles\Fulfillments;
+namespace tasdev\orderfulfillments\assetbundles\fulfillments;
 
 use Craft;
 use craft\web\AssetBundle;

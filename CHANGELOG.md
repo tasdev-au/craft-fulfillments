@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.1.1 - 2020-05-30
+### Fixed
+- Fixed psr-4 autoload warning.
+
 ## 1.1 - 2020-04-03
 ### Added
 - New `FulfillableQtyEvent` event (thanks [@moldedjelly](https://github.com/moldedjelly))

@@ -2,7 +2,7 @@
     "name": "tasdev-au/craft-fulfillments",
     "description": "Add Shopify like fulfillments to your Craft Commerce orders.",
     "type": "craft-plugin",
-    "version": "1.1",
+    "version": "1.1.1",
     "keywords": [
         "craft",
         "cms",
@@ -22,7 +22,7 @@
         "docs": "https://tas.dev/plugins/fulfillments/installation",
         "issues": "https://github.com/tasdev-au/craft-fulfillments/issues"
     },
-    "license": "MIT",
+    "license": "proprietary",
     "authors": [
         {
             "name": "Jayden Smith",
