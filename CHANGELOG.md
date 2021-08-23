@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.1.2 - 2020-05-30
+### Fixed
+- Fixed issue with fulfillments tab being highlighted by default.
+### Changed
+- Updated fulfillments tab to use the `cp.commerce.order.content` hook.
+- Now requires Craft Commerce >= 3.2.13
+
 ## 1.1.1 - 2020-05-30
 ### Fixed
 - Fixed psr-4 autoload warning.
