@@ -165,7 +165,7 @@ class OrderFulfillments extends Plugin
             // Add fulfillments tab to order edit page.
             Event::on(View::class, View::EVENT_BEFORE_RENDER_PAGE_TEMPLATE, function (TemplateEvent $event) {
                 if ($event->template === 'commerce/orders/_edit') {
-                    $event->variables['tabs'][] = [
+                    $event->variables['tabs']['order-fulfillments'] = [
                         'label' => 'Fulfillments',
                         'url' => '#fulfillmentsTab',
                         'class' => null,
@@ -174,7 +174,7 @@ class OrderFulfillments extends Plugin
             });
 
             // Uses order edit template hook to inject order fulfillments.
-            Craft::$app->view->hook('cp.commerce.order.edit', function (&$context) {
+            Craft::$app->view->hook('cp.commerce.order.content', function (&$context) {
                 /* @var Order $order */
                 $order = $context['order'];
                 $fulfillmentLines = [];
