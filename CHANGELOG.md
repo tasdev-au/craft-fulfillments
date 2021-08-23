@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 1.1.2 - 2020-05-30
+## 1.1.2 - 2021-08-23
 ### Fixed
 - Fixed issue with fulfillments tab being highlighted by default.
 ### Changed
