@@ -61,7 +61,7 @@ trait Services
     /**
      * Set the components of the plugin
      */
-    private function _setPluginComponents()
+    private function _setPluginComponents(): void
     {
         $this->setComponents([
             'fulfillments' => Fulfillments::class,

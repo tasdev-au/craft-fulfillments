@@ -11,7 +11,6 @@
 namespace tasdev\orderfulfillments\behaviors;
 
 
-use Craft;
 use craft\commerce\elements\Order;
 use tasdev\orderfulfillments\models\Fulfillment;
 use tasdev\orderfulfillments\OrderFulfillments;
@@ -24,7 +23,10 @@ use yii\base\Behavior;
  */
 class OrderFulfillmentsBehavior extends Behavior
 {
-    private $_fulfillments;
+    /**
+     * @var ?Fulfillment[]
+     */
+    private ?array $_fulfillments = null;
 
 
     // Public Methods
@@ -33,9 +35,9 @@ class OrderFulfillmentsBehavior extends Behavior
     /**
      * Returns the fulfillments for the order, or null if the order is not saved.
      *
-     * @return Fulfillment[]|null
+     * @return ?Fulfillment[]
      */
-    public function getFulfillments()
+    public function getFulfillments(): ?array
     {
         if (!$this->_fulfillments) {
             /* @var Order $order */
@@ -56,9 +58,9 @@ class OrderFulfillmentsBehavior extends Behavior
      * Returns the most recent fulfillment for the order,
      * or null if the order is not saved or has no fulfillments.
      *
-     * @return Fulfillment|null
+     * @return ?Fulfillment
      */
-    public function getLastFulfillment()
+    public function getLastFulfillment(): ?Fulfillment
     {
         $fulfillments = $this->getFulfillments();
 

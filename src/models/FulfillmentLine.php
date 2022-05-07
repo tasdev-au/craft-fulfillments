@@ -17,6 +17,7 @@ use craft\commerce\Plugin as Commerce;
 use craft\helpers\Html;
 use craft\helpers\Json;
 use tasdev\orderfulfillments\OrderFulfillments;
+use yii\base\InvalidConfigException;
 
 
 /**
@@ -33,43 +34,43 @@ class FulfillmentLine extends Model
     // =========================================================================
 
     /**
-     * @var int
+     * @var ?int
      */
-    public $id;
+    public ?int $id = null;
 
     /**
-     * @var int
+     * @var ?int
      */
-    public $fulfillmentId;
-
-    /**
-     * @var string
-     */
-    public $lineItemId;
-
-    /**
-     * @var int
-     */
-    public $fulfilledQty;
+    public ?int $fulfillmentId = null;
 
     /**
      * @var string
      */
-    public $uid;
+    public string $lineItemId;
+
+    /**
+     * @var int
+     */
+    public int $fulfilledQty;
+
+    /**
+     * @var string
+     */
+    public string $uid;
 
 
     // Private Properties
     // =========================================================================
 
     /**
-     * @var Fulfillment
+     * @var ?Fulfillment
      */
-    private $_fulfillment;
+    private ?Fulfillment $_fulfillment = null;
 
     /**
-     * @var LineItem
+     * @var ?LineItem
      */
-    private $_lineItem;
+    private ?LineItem $_lineItem = null;
 
 
     // Public Methods
@@ -96,9 +97,9 @@ class FulfillmentLine extends Model
     /**
      * Gets the fulfillment.
      *
-     * @return Fulfillment|null
+     * @return ?Fulfillment
      */
-    public function getFulfillment()
+    public function getFulfillment(): ?Fulfillment
     {
         if (!$this->_fulfillment) {
             $this->_fulfillment = OrderFulfillments::getInstance()->getFulfillments()->getFulfillmentById($this->fulfillmentId);
@@ -121,9 +122,10 @@ class FulfillmentLine extends Model
     /**
      * Gets the line item.
      *
-     * @return LineItem|null
+     * @return ?LineItem
+     * @throws InvalidConfigException
      */
-    public function getLineItem()
+    public function getLineItem(): ?LineItem
     {
         if (!$this->_lineItem) {
             $this->_lineItem = Commerce::getInstance()->getLineItems()->getLineItemById($this->lineItemId);
@@ -146,7 +148,7 @@ class FulfillmentLine extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['fulfillmentId', 'lineItemId', 'fulfilledQty'], 'required'],

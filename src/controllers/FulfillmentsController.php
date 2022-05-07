@@ -12,7 +12,6 @@ namespace tasdev\orderfulfillments\controllers;
 
 
 use Craft;
-use craft\commerce\helpers\Order;
 use craft\web\Controller;
 use craft\commerce\Plugin as Commerce;
 use tasdev\orderfulfillments\OrderFulfillments;
@@ -21,6 +20,8 @@ use Throwable;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
+use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
@@ -41,9 +42,9 @@ class FulfillmentsController extends Controller
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
-     * @throws BadRequestHttpException
+     * @throws Exception
      */
-    public function actionGetHtml()
+    public function actionGetHtml(): ?Response
     {
         $fulfillment = $this->_buildFulfillmentFromPost();
 
@@ -106,17 +107,15 @@ class FulfillmentsController extends Controller
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     private function _getFulfillmentFormHtml(Fulfillment $fulfillment): string
     {
         $view = Craft::$app->getView();
 
-        $html = $view->renderTemplate('order-fulfillments/_modals/create-fulfillment', [
+        return $view->renderTemplate('order-fulfillments/_modals/create-fulfillment', [
             'fulfillment' => $fulfillment,
         ]);
-
-        return $html;
     }
 
     /**
@@ -124,6 +123,7 @@ class FulfillmentsController extends Controller
      *
      * @return Fulfillment
      * @throws BadRequestHttpException
+     * @throws InvalidConfigException
      */
     private function _buildFulfillmentFromPost(): Fulfillment
     {

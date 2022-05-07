@@ -14,7 +14,6 @@ use Craft;
 use craft\commerce\models\OrderStatus as OrderStatusModel;
 use craft\commerce\Plugin as Commerce;
 use craft\db\Migration;
-use craft\helpers\MigrationHelper;
 use yii\base\Exception;
 
 /**
@@ -137,11 +136,11 @@ class Install extends Migration
      *
      * @return void
      */
-    protected function createIndexes()
+    protected function createIndexes(): void
     {
-        $this->createIndex($this->db->getIndexName('{{%orderfulfillments_fulfillments}}', 'orderId', false), '{{%orderfulfillments_fulfillments}}', 'orderId', false);
-        $this->createIndex($this->db->getIndexName('{{%orderfulfillments_fulfillment_lines}}', 'lineItemId', false), '{{%orderfulfillments_fulfillment_lines}}', 'lineItemId', false);
-        $this->createIndex($this->db->getIndexName('{{%orderfulfillments_fulfillment_lines}}', 'fulfillmentId', false), '{{%orderfulfillments_fulfillment_lines}}', 'fulfillmentId', false);
+        $this->createIndex(null, '{{%orderfulfillments_fulfillments}}', 'orderId');
+        $this->createIndex(null, '{{%orderfulfillments_fulfillment_lines}}', 'lineItemId');
+        $this->createIndex(null, '{{%orderfulfillments_fulfillment_lines}}', 'fulfillmentId');
     }
 
     /**
@@ -149,11 +148,11 @@ class Install extends Migration
      *
      * @return void
      */
-    protected function addForeignKeys()
+    protected function addForeignKeys(): void
     {
-        $this->addForeignKey($this->db->getForeignKeyName('{{%orderfulfillments_fulfillments}}', 'orderId'), '{{%orderfulfillments_fulfillments}}', 'orderId', '{{%commerce_orders}}', 'id', 'CASCADE', 'CASCADE');
-        $this->addForeignKey($this->db->getForeignKeyName('{{%orderfulfillments_fulfillment_lines}}', 'lineItemId'), '{{%orderfulfillments_fulfillment_lines}}', 'lineItemId', '{{%commerce_lineitems}}', 'id', 'CASCADE', 'CASCADE');
-        $this->addForeignKey($this->db->getForeignKeyName('{{%orderfulfillments_fulfillment_lines}}', 'fulfillmentId'), '{{%orderfulfillments_fulfillment_lines}}', 'fulfillmentId', '{{%orderfulfillments_fulfillments}}', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey(null, '{{%orderfulfillments_fulfillments}}', 'orderId', '{{%commerce_orders}}', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey(null, '{{%orderfulfillments_fulfillment_lines}}', 'lineItemId', '{{%commerce_lineitems}}', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey(null, '{{%orderfulfillments_fulfillment_lines}}', 'fulfillmentId', '{{%orderfulfillments_fulfillments}}', 'id', 'CASCADE', 'CASCADE');
     }
 
     /**
@@ -161,14 +160,14 @@ class Install extends Migration
      *
      * @return void
      */
-    protected function dropForeignKeys()
+    protected function dropForeignKeys(): void
     {
         if ($this->db->tableExists('{{%orderfulfillments_fulfillments}}')) {
-            MigrationHelper::dropAllForeignKeysOnTable('{{%orderfulfillments_fulfillments}}', $this);
+            $this->dropAllForeignKeysToTable('{{%orderfulfillments_fulfillments}}');
         }
 
         if ($this->db->tableExists('{{%orderfulfillments_fulfillment_lines}}')) {
-            MigrationHelper::dropAllForeignKeysOnTable('{{%orderfulfillments_fulfillment_lines}}', $this);
+            $this->dropAllForeignKeysToTable('{{%orderfulfillments_fulfillment_lines}}');
         }
     }
 }

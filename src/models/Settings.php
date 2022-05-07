@@ -28,17 +28,17 @@ class Settings extends Model
     /**
      * @var string
      */
-    public $fulfilledStatus = 'fulfilled';
+    public string $fulfilledStatus = 'fulfilled';
 
     /**
      * @var string
      */
-    public $partiallyFulfilledStatus = 'partiallyFulfilled';
+    public string $partiallyFulfilledStatus = 'partiallyFulfilled';
 
     /**
      * @var bool
      */
-    public $resendPartiallyFulfilledEmail = true;
+    public bool $resendPartiallyFulfilledEmail = true;
 
 
     // Public Methods
@@ -47,7 +47,7 @@ class Settings extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
 

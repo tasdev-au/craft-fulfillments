@@ -79,9 +79,9 @@ class Fulfillments extends Component
      * Gets a fulfillment by its ID.
      *
      * @param int $fulfillmentId
-     * @return Fulfillment|null
+     * @return ?Fulfillment
      */
-    public function getFulfillmentById($fulfillmentId)
+    public function getFulfillmentById(int $fulfillmentId): ?Fulfillment
     {
         $result = $this->_createFulfillmentQuery()
             ->where(['id' => $fulfillmentId])
@@ -94,9 +94,9 @@ class Fulfillments extends Component
      * Gets fulfillments by the order ID.
      *
      * @param int $orderId
-     * @return Fulfillment[]|null
+     * @return ?Fulfillment[]
      */
-    public function getFulfillmentsByOrderId($orderId)
+    public function getFulfillmentsByOrderId(int $orderId): ?array
     {
         $results = $this->_createFulfillmentQuery()
             ->where(['orderId' => $orderId])
@@ -115,9 +115,9 @@ class Fulfillments extends Component
      * Gets fulfillments by the order.
      *
      * @param Order $order
-     * @return Fulfillment[]|null
+     * @return ?Fulfillment[]
      */
-    public function getFulfillmentsByOrder(Order $order)
+    public function getFulfillmentsByOrder(Order $order): ?array
     {
         return $this->getFulfillmentsByOrderId($order->id);
     }
@@ -263,9 +263,7 @@ class Fulfillments extends Component
      */
     public function deleteFulfillmentById(int $fulfillmentId): bool
     {
-        $result = (bool)FulfillmentRecord::deleteAll(['id' => $fulfillmentId]);
-
-        return $result;
+        return (bool)FulfillmentRecord::deleteAll(['id' => $fulfillmentId]);
     }
 
 

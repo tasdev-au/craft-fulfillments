@@ -10,9 +10,6 @@
 
 namespace tasdev\orderfulfillments\records;
 
-use tasdev\orderfulfillments\OrderFulfillments;
-
-use Craft;
 use craft\db\ActiveRecord;
 
 /**

@@ -10,6 +10,10 @@
 
 namespace tasdev\orderfulfillments;
 
+use Craft;
+use craft\base\Plugin;
+use craft\web\twig\variables\CraftVariable;
+use craft\base\Model;
 use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
 use craft\commerce\Plugin as Commerce;
@@ -18,24 +22,17 @@ use craft\events\PluginEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\events\TemplateEvent;
 use craft\helpers\ArrayHelper;
-use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\services\Plugins;
 use craft\services\UserPermissions;
 use craft\web\View;
+
 use tasdev\orderfulfillments\behaviors\OrderFulfillmentsBehavior;
 use tasdev\orderfulfillments\models\Settings;
 use tasdev\orderfulfillments\plugin\Services;
 use tasdev\orderfulfillments\plugin\Routes;
 use tasdev\orderfulfillments\services\Fulfillments as FulfillmentsService;
 use tasdev\orderfulfillments\variables\FulfillmentsVariable;
-use tasdev\orderfulfillments\fields\Fulfillments as FulfillmentsField;
-
-use Craft;
-use craft\base\Plugin;
-use craft\services\Fields;
-use craft\web\twig\variables\CraftVariable;
-use craft\events\RegisterComponentTypesEvent;
 
 use yii\base\Event;
 
@@ -56,7 +53,7 @@ class OrderFulfillments extends Plugin
     /**
      * @var OrderFulfillments
      */
-    public static $plugin;
+    public static OrderFulfillments $plugin;
 
 
     // Public Properties
@@ -65,17 +62,17 @@ class OrderFulfillments extends Plugin
     /**
      * @inheritDoc
      */
-    public $hasCpSection = false;
-
-    /**a
-     * @inheritDoc
-     */
-    public $hasCpSettings = false;
+    public bool $hasCpSection = false;
 
     /**
-     * @var string
+     * @inheritDoc
      */
-    public $schemaVersion = '1.0.0';
+    public bool $hasCpSettings = false;
+
+    /**
+     * @inheritDoc
+     */
+    public string $schemaVersion = '1.0.0';
 
 
     // Traits
@@ -107,7 +104,7 @@ class OrderFulfillments extends Plugin
     /**
      * @inheritdoc
      */
-    public function getCpNavItem()
+    public function getCpNavItem(): ?array
     {
         return null;
     }
@@ -119,7 +116,7 @@ class OrderFulfillments extends Plugin
     /**
      * @inheritdoc
      */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): ?Model
     {
         return new Settings();
     }
@@ -177,11 +174,11 @@ class OrderFulfillments extends Plugin
             Craft::$app->view->hook('cp.commerce.order.content', function (&$context) {
                 /* @var Order $order */
                 $order = $context['order'];
+
                 $fulfillmentLines = [];
 
-                /* @var LineItem $lineItem */
                 foreach ($order->getLineItems() as $lineItem) {
-                    $fulfillableQty = $this->getFulfillmentLines()->getFulfillableQty($lineItem, $limitToStock = true);
+                    $fulfillableQty = $this->getFulfillmentLines()->getFulfillableQty($lineItem);
                     $maxfulfillableQty = $this->getFulfillmentLines()->getFulfillableQty($lineItem);
 
                     $fulfillmentLines[] = [
@@ -206,7 +203,7 @@ class OrderFulfillments extends Plugin
         }
 
         // Add fulfillments behavior to access fulfillments like $order->fulfillments.
-        Event::on(Order::class, Order::EVENT_DEFINE_BEHAVIORS, function (DefineBehaviorsEvent $event) {
+        Event::on(Order::class, Model::EVENT_DEFINE_BEHAVIORS, function (DefineBehaviorsEvent $event) {
             $event->behaviors[] = OrderFulfillmentsBehavior::class;
         });
 

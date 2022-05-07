@@ -75,7 +75,7 @@
             </div>
 
             {% if fulfillment.trackingCarrier %}
-                <div>
+                <div class="field">
                     {{ forms.textField({
                         label: 'Tracking URL' | t('order-fulfillments'),
                         value: fulfillment.trackingCarrier.trackingUrl,
@@ -98,6 +98,10 @@
                 data-lines="{{ fulfillmentLines | json_encode }}"
                 data-carriers="{{ fulfillmentCarriers | json_encode }}">{{ 'New fulfillment' | t('order-fulfillments') }}</div>
         </div>
+    {% endif %}
+
+    {% if order.lineItems | length == 0 %}
+        <p>There are no line items to fulfill.</p>
     {% endif %}
 </div>
 

@@ -26,10 +26,10 @@ class FulfillmentEvent extends CancelableEvent
     /**
      * @var Fulfillment The fulfillment model.
      */
-    public $fulfillment;
+    public Fulfillment $fulfillment;
 
     /**
      * @var bool If this is a new fulfillment.
      */
-    public $isNew = false;
+    public bool $isNew = false;
 }

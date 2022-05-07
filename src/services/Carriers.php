@@ -10,27 +10,17 @@
 
 namespace tasdev\orderfulfillments\services;
 
-use Craft;
-use craft\commerce\Plugin as Commerce;
-use craft\db\Query;
 use craft\base\Component;
-use craft\commerce\elements\Order;
 use craft\events\RegisterComponentTypesEvent;
-use tasdev\orderfulfillments\base\TrackingCarrier;
 use tasdev\orderfulfillments\carriers\AusPost;
 use tasdev\orderfulfillments\carriers\DHLCanada;
 use tasdev\orderfulfillments\carriers\DHLGlobal;
 use tasdev\orderfulfillments\carriers\DHLUS;
 use tasdev\orderfulfillments\carriers\FedEx;
+use tasdev\orderfulfillments\carriers\Sendle;
 use tasdev\orderfulfillments\carriers\StarTrack;
 use tasdev\orderfulfillments\carriers\UPS;
 use tasdev\orderfulfillments\carriers\USPS;
-use tasdev\orderfulfillments\OrderFulfillments;
-use tasdev\orderfulfillments\models\Fulfillment;
-use tasdev\orderfulfillments\events\FulfillmentEvent;
-use tasdev\orderfulfillments\records\Fulfillment as FulfillmentRecord;
-use yii\base\Exception;
-use Throwable;
 
 /**
  * @author    Jayden Smith
@@ -76,6 +66,7 @@ class Carriers extends Component
             DHLGlobal::class,
             DHLUS::class,
             FedEx::class,
+            Sendle::class,
             StarTrack::class,
             UPS::class,
             USPS::class,

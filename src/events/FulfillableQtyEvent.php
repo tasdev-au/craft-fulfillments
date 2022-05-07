@@ -29,22 +29,22 @@ class FulfillableQtyEvent extends CancelableEvent
     /**
      * @var LineItem The line item model.
      */
-    public $lineItem;
+    public LineItem $lineItem;
 
     /**
      * @var FulfillmentLine[] all the fulfillment lines by the line item id.
      */
-    public $fulfillmentItems;
+    public array $fulfillmentItems;
 
     /**
      * @var int quantity
      */
-    public $quantity;
+    public int $quantity;
 
     /**
      * @var boolean to limit the qty retrieved to actual stock
      */
-    public $limitToStock;
+    public bool $limitToStock;
 
 
 }

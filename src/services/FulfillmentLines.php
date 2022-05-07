@@ -86,9 +86,9 @@ class FulfillmentLines extends Component
      * Gets a fulfillment line by its ID.
      *
      * @param int $fulfillmentLineId
-     * @return FulfillmentLine|null
+     * @return ?FulfillmentLine
      */
-    public function getFulfillmentLineById($fulfillmentLineId)
+    public function getFulfillmentLineById($fulfillmentLineId): ?FulfillmentLine
     {
         $result = $this->_createFulfillmentLineQuery()
             ->where(['id' => $fulfillmentLineId])
@@ -103,7 +103,7 @@ class FulfillmentLines extends Component
      * @param $fulfillmentId
      * @return FulfillmentLine[]
      */
-    public function getFulfillmentLinesByFulfillmentId($fulfillmentId)
+    public function getFulfillmentLinesByFulfillmentId($fulfillmentId): array
     {
         $results = $this->_createFulfillmentLineQuery()
             ->where(['fulfillmentId' => $fulfillmentId])
@@ -123,7 +123,7 @@ class FulfillmentLines extends Component
      * @param Fulfillment $fulfillment
      * @return FulfillmentLine[]
      */
-    public function getFulfillmentLinesByFulfillment(Fulfillment $fulfillment)
+    public function getFulfillmentLinesByFulfillment(Fulfillment $fulfillment): array
     {
         return $this->getFulfillmentLinesByFulfillmentId($fulfillment->id);
     }
@@ -134,7 +134,7 @@ class FulfillmentLines extends Component
      * @param int $lineItemId
      * @return FulfillmentLine[]
      */
-    public function getFulfillmentLinesByLineItemId($lineItemId)
+    public function getFulfillmentLinesByLineItemId($lineItemId): array
     {
         $results = $this->_createFulfillmentLineQuery()
             ->where(['lineItemId' => $lineItemId])
@@ -154,7 +154,7 @@ class FulfillmentLines extends Component
      * @param LineItem $lineItem
      * @return FulfillmentLine[]
      */
-    public function getFulfillmentLinesByLineItem($lineItem)
+    public function getFulfillmentLinesByLineItem(LineItem $lineItem): array
     {
         return $this->getFulfillmentLinesByLineItemId($lineItem->id);
     }
@@ -166,7 +166,7 @@ class FulfillmentLines extends Component
      * @param Boolean $limitToStock
      * @return int
      */
-    public function getFulfillableQty(LineItem $lineItem, $limitToStock = false): int
+    public function getFulfillableQty(LineItem $lineItem, bool $limitToStock = false): int
     {
         $fulfillmentItems = $this->getFulfillmentLinesByLineItem($lineItem);
 
@@ -196,7 +196,7 @@ class FulfillmentLines extends Component
      * @param Order $order
      * @return LineItem[]
      */
-    public function getUnfulfilledLineItems($order)
+    public function getUnfulfilledLineItems(Order $order): array
     {
         if (!$order) {
             return [];

@@ -11,13 +11,13 @@
 namespace tasdev\orderfulfillments\models;
 
 
-use Craft;
 use DateTime;
 use craft\base\Model;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
 use tasdev\orderfulfillments\base\TrackingCarrier;
 use tasdev\orderfulfillments\OrderFulfillments;
+use yii\base\InvalidConfigException;
 
 
 /**
@@ -31,55 +31,55 @@ class Fulfillment extends Model
     // =========================================================================
 
     /**
-     * @var int
+     * @var ?int
      */
-    public $id;
+    public ?int $id = null;
 
     /**
      * @var int
      */
-    public $orderId;
+    public int $orderId;
 
     /**
      * @var string
      */
-    public $trackingNumber;
+    public string $trackingNumber;
 
     /**
-     * @var string|null
+     * @var ?string
      */
-    public $trackingCarrierClass;
+    public ?string $trackingCarrierClass;
 
     /**
      * @var string
      */
-    public $uid;
+    public string $uid;
 
     /**
-     * @var DateTime|null
+     * @var ?DateTime
      * @since 1.1
      */
-    public $dateCreated;
+    public ?DateTime $dateCreated;
 
     /**
-     * @var DateTime|null
+     * @var ?DateTime
      * @since 1.1
      */
-    public $dateUpdated;
+    public ?DateTime $dateUpdated;
 
 
     // Private Properties
     // =========================================================================
 
     /**
-     * @var Order
+     * @var ?Order
      */
-    private $_order;
+    private ?Order $_order = null;
 
     /**
-     * @var FulfillmentLine[]
+     * @var ?FulfillmentLine[]
      */
-    private $_fulfillmentLines;
+    private ?array $_fulfillmentLines = null;
 
 
     // Public Methods
@@ -88,9 +88,10 @@ class Fulfillment extends Model
     /**
      * Gets the order.
      *
-     * @return Order|null
+     * @return ?Order
+     * @throws InvalidConfigException
      */
-    public function getOrder()
+    public function getOrder(): ?Order
     {
         if (!$this->_order) {
             $this->_order = Commerce::getInstance()->getOrders()->getOrderById($this->orderId);
@@ -113,9 +114,9 @@ class Fulfillment extends Model
     /**
      * Gets the selected tracking carrier.
      *
-     * @return TrackingCarrier|null
+     * @return ?TrackingCarrier
      */
-    public function getTrackingCarrier()
+    public function getTrackingCarrier(): ?TrackingCarrier
     {
         $class = $this->trackingCarrierClass;
         if (!$class) {
@@ -130,9 +131,9 @@ class Fulfillment extends Model
     /**
      * Gets all fulfillment lines for this fulfillment.
      *
-     * @return FulfillmentLine[]
+     * @return ?FulfillmentLine[]
      */
-    public function getFulfillmentLines()
+    public function getFulfillmentLines(): ?array
     {
         $this->_fetchFulfillmentLines();
         return $this->_fulfillmentLines;
@@ -143,7 +144,7 @@ class Fulfillment extends Model
      *
      * @param FulfillmentLine[] $fulfillmentLines
      */
-    public function setFulfillmentLines($fulfillmentLines)
+    public function setFulfillmentLines(array $fulfillmentLines)
     {
         $this->_fulfillmentLines = $fulfillmentLines;
     }
@@ -153,7 +154,7 @@ class Fulfillment extends Model
      *
      * @param FulfillmentLine $fulfillmentLine
      */
-    public function addFulfillmentLine($fulfillmentLine)
+    public function addFulfillmentLine(FulfillmentLine $fulfillmentLine)
     {
         $this->_fetchFulfillmentLines();
         $this->_fulfillmentLines[] = $fulfillmentLine;
@@ -162,7 +163,7 @@ class Fulfillment extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
 
@@ -174,7 +175,7 @@ class Fulfillment extends Model
     /**
      * @inheritDoc
      */
-    public function validate($attributeNames = null, $clearErrors = true)
+    public function validate($attributeNames = null, $clearErrors = true): bool
     {
         $hasErrors = false;
 

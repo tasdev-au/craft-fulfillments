@@ -7,32 +7,18 @@
  * @link      https://tas.dev
  * @copyright Copyright (c) 2019 Jayden Smith
  */
+namespace tasdev\orderfulfillments\carriers;
 
-namespace tasdev\orderfulfillments\base;
-
-use craft\base\Model;
+use Craft;
+use tasdev\orderfulfillments\base\TrackingCarrier;
 
 /**
  * @author    Jayden Smith
  * @package   Fulfillments
- * @since     1.0.0
+ * @since     2.0.0
  */
-abstract class TrackingCarrier extends Model
+class Sendle extends TrackingCarrier
 {
-    // Properties
-    // =========================================================================
-
-    /**
-     * @var string the shipment tracking number
-     */
-    public string $trackingNumber;
-
-    /**
-     * @var int override the default order by specifying an integer
-     */
-    public int $order = 0;
-
-
     // Public Methods
     // =========================================================================
 
@@ -41,12 +27,18 @@ abstract class TrackingCarrier extends Model
      *
      * @return string
      */
-    public abstract function getName(): string;
+    public function getName(): string
+    {
+        return Craft::t('order-fulfillments', 'Sendle');
+    }
 
     /**
      * Returns the tracking URL for the carrier formatted with the tracking number.
      *
      * @return string
      */
-    public abstract function getTrackingUrl(): string;
+    public function getTrackingUrl(): string
+    {
+        return "https://track.sendle.com/tracking?ref={$this->trackingNumber}";
+    }
 }
