@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.0.1 - 2022-05-10
+### Fixed
+- Fixed bug with plugin permissions.
+
 ## 2.0.0 - 2022-05-07
 ### Fixed
 - Updated for compatibility with Craft 4 and Commerce 4.

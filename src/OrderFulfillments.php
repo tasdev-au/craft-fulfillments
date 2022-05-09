@@ -225,10 +225,13 @@ class OrderFulfillments extends Plugin
     private function _registerPermissions()
     {
         Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
-            $event->permissions[Craft::t('order-fulfillments', 'Fulfillments')] = [
-                'order-fulfillments-viewFulfillments' => ['label' => Craft::t('order-fulfillments', 'View fulfillments')],
-                'order-fulfillments-createFulfillments' => ['label' => Craft::t('order-fulfillments', 'Create fulfillments')],
-                'order-fulfillments-deleteFulfillments' => ['label' => Craft::t('order-fulfillments', 'Delete fulfillments')],
+            $event->permissions[] = [
+                'heading' => Craft::t('order-fulfillments', 'Fulfillments'),
+                'permissions' => [
+                    'order-fulfillments-viewFulfillments' => ['label' => Craft::t('order-fulfillments', 'View fulfillments')],
+                    'order-fulfillments-createFulfillments' => ['label' => Craft::t('order-fulfillments', 'Create fulfillments')],
+                    'order-fulfillments-deleteFulfillments' => ['label' => Craft::t('order-fulfillments', 'Delete fulfillments')],
+                ],
             ];
         });
     }
