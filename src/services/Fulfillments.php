@@ -164,7 +164,7 @@ class Fulfillments extends Component
             $fulfillmentRecord = FulfillmentRecord::findOne($fulfillment->id);
 
             if (!$fulfillmentRecord) {
-                throw new Exception(Craft::t('auctions', 'No fulfillments exists with the ID “{id}”',
+                throw new Exception(Craft::t('order-fulfillments', 'No fulfillments exists with the ID “{id}”',
                     ['id' => $fulfillmentRecord->id]));
             }
         }
@@ -231,6 +231,7 @@ class Fulfillments extends Component
                 $oldStatusId = $order->orderStatusId;
 
                 $order->orderStatusId = $status->id;
+                $order->setRecalculationMode(Order::RECALCULATION_MODE_NONE);
                 /** @noinspection PhpUnhandledExceptionInspection */
                 Craft::$app->getElements()->saveElement($order);
 
