@@ -157,10 +157,10 @@ class OrderFulfillments extends Plugin
      */
     private function _registerEventHandlers()
     {
-        if (Craft::$app->getUser()->checkPermission('order-fulfillments-viewFulfillments') ||
-            Craft::$app->getUser()->checkPermission('order-fulfillments-createFulfillments')) {
-            // Add fulfillments tab to order edit page.
-            Event::on(View::class, View::EVENT_BEFORE_RENDER_PAGE_TEMPLATE, function (TemplateEvent $event) {
+        // Add fulfillments tab to order edit page.
+        Event::on(View::class, View::EVENT_BEFORE_RENDER_PAGE_TEMPLATE, function (TemplateEvent $event) {
+            if (Craft::$app->getUser()->checkPermission('order-fulfillments-viewFulfillments') ||
+                Craft::$app->getUser()->checkPermission('order-fulfillments-createFulfillments')) {
                 if ($event->template === 'commerce/orders/_edit') {
                     $event->variables['tabs']['order-fulfillments'] = [
                         'label' => 'Fulfillments',
@@ -168,10 +168,13 @@ class OrderFulfillments extends Plugin
                         'class' => null,
                     ];
                 }
-            });
+            }
+        });
 
-            // Uses order edit template hook to inject order fulfillments.
-            Craft::$app->view->hook('cp.commerce.order.content', function (&$context) {
+        // Uses order edit template hook to inject order fulfillments.
+        Craft::$app->view->hook('cp.commerce.order.content', function (&$context) {
+            if (Craft::$app->getUser()->checkPermission('order-fulfillments-viewFulfillments') ||
+                Craft::$app->getUser()->checkPermission('order-fulfillments-createFulfillments')) {
                 /* @var Order $order */
                 $order = $context['order'];
 
@@ -197,10 +200,10 @@ class OrderFulfillments extends Plugin
                 }
 
                 $context['fulfillmentCarriers'] = $carriers;
+            }
 
-                return Craft::$app->view->renderTemplate('order-fulfillments/_includes/fulfillments', $context);
-            });
-        }
+            return Craft::$app->view->renderTemplate('order-fulfillments/_includes/fulfillments', $context);
+        });
 
         // Add fulfillments behavior to access fulfillments like $order->fulfillments.
         Event::on(Order::class, Model::EVENT_DEFINE_BEHAVIORS, function (DefineBehaviorsEvent $event) {

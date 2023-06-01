@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.1 - 2023-06-01
+### Fixed
+- Fixed issue where an element query was executed before Craft was fully initialized.
+
 ## 4.0.0 - 2022-12-19
 ### Changed
 - No longer recalculates orders when updating status.
