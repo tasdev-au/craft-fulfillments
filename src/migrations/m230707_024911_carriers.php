@@ -6,6 +6,7 @@ use Craft;
 use craft\db\Migration;
 use craft\db\Query;
 use craft\events\RegisterComponentTypesEvent;
+use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use tasdev\orderfulfillments\models\Carrier;
 use tasdev\orderfulfillments\OrderFulfillments;
 use tasdev\orderfulfillments\services\Carriers;
@@ -84,6 +85,9 @@ class m230707_024911_carriers extends Migration
                 ]);
 
                 OrderFulfillments::getInstance()->getCarriers()->saveCarrier($newCarrier);
+
+                ProjectConfigHelper::ensureAllSitesProcessed();
+                ProjectConfigHelper::ensureAllFieldsProcessed();
 
                 $this->update('{{%orderfulfillments_carriers}}', [
                     'legacyClass' => $type
