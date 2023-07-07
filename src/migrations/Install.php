@@ -89,6 +89,7 @@ class Install extends Migration
             'trackingUrl' => $this->string()->notNull(),
             'isEnabled' => $this->boolean()->defaultValue(true),
             'order' => $this->integer()->defaultValue(999),
+            'legacyClass' => $this->string(),
             'uid' => $this->uid(),
         ]);
     }

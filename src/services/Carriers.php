@@ -266,6 +266,7 @@ class Carriers extends Component
             $carrierRecord->trackingUrl = $data['trackingUrl'];
             $carrierRecord->isEnabled = $data['isEnabled'];
             $carrierRecord->order = $data['order'];
+            $carrierRecord->legacyClass = $data['legacyClass'];
 
             // Save the product type
             $carrierRecord->save(false);
@@ -335,6 +336,7 @@ class Carriers extends Component
                 'trackingUrl',
                 'isEnabled',
                 'order',
+                'legacyClass',
                 'uid'
             ])
             ->orderBy('order')

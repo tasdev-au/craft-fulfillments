@@ -82,16 +82,10 @@ class m230707_024911_carriers extends Migration
                     'trackingUrl' => $carrier->getTrackingUrl(),
                     'isEnabled' => true,
                     'order' => $index,
+                    'legacyClass' => $type,
                 ]);
 
                 OrderFulfillments::getInstance()->getCarriers()->saveCarrier($newCarrier);
-
-                ProjectConfigHelper::ensureAllSitesProcessed();
-                ProjectConfigHelper::ensureAllFieldsProcessed();
-
-                $this->update('{{%orderfulfillments_carriers}}', [
-                    'legacyClass' => $type
-                ], ['id' => $newCarrier->id]);
             }
         }
 

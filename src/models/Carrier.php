@@ -55,6 +55,11 @@ class Carrier extends Model
      */
     public string $uid;
 
+    /**
+     * @var ?string
+     */
+    public ?string $legacyClass;
+
 
     // Public Methods
     // =========================================================================

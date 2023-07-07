@@ -22,6 +22,7 @@ use craft\db\ActiveRecord;
  * @property string $trackingUrl
  * @property bool $isEnabled
  * @property int $order
+ * @property string $legacyClass
  */
 class Carrier extends ActiveRecord
 {
