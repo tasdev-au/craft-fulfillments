@@ -85,9 +85,9 @@
                 <div class="flex-grow">
                     {{ forms.textField({
                         label: 'Tracking Carrier' | t('order-fulfillments'),
-                        name: 'trackingCarrier',
-                        value: fulfillment.trackingCarrier,
-                        errors: fulfillment.getErrors('trackingCarrier') ?? null
+                        name: 'trackingCarrierId',
+                        value: fulfillment.trackingCarrierId,
+                        errors: fulfillment.getErrors('trackingCarrierId') ?? null
                     }) }}
                 </div>
             </div>

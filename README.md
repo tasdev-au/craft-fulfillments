@@ -15,21 +15,6 @@ Read the full documentation [here](https://tas.dev/plugins/fulfillments/installa
 
 <img width="500" src="https://tas.dev/uploads/plugins/fulfillments/screenshot-2.png" style="box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-radius: 4px; border: 1px solid rgba(0,0,0,0.12);">
 
-## Adding Carriers
-
-Plugins and modules can register their own carriers to choose from when fulfilling orders.
-```php
-use craft\events\RegisterComponentTypesEvent;
-use tasdev\orderfulfillments\services\Carriers;
-use yii\base\Event;
-
-Event::on(Carriers::class, Carriers::EVENT_REGISTER_CARRIERS, function(RegisterComponentTypesEvent $e) {
-    $e->types[] = MyCarrier::class;
-});
-```
-
-To see what your `MyCarrier` class might look like, [take a look at the default classes](src/carriers/AusPost.php).
-
 ## Support
 
 [Create a Github issue](https://github.com/tasdev-au/craft-fulfillments/issues) if you experience a bug with the Fulfillments plugin.

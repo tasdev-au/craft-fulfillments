@@ -1,0 +1,42 @@
+{% extends 'order-fulfillments/settings/_layout' %}
+
+{% set title = carrier.name %}
+{% set crumb = { label: title | t('order-fulfillments'), url: url('order-fulfillments/settings/carriers/' ~ carrier.id) } %}
+
+{% set fullPageForm = true %}
+{% set selectedItem = 'carriers' %}
+
+{% block content %}
+    {{ actionInput('order-fulfillments/plugin/save-carrier') }}
+    {{ hiddenInput('carrierId', carrier.id) }}
+    {{ redirectInput('order-fulfillments/settings/carriers') }}
+
+    {% import '_includes/forms' as forms %}
+
+    {{ forms.textField({
+        label: 'Name' | t('order-fulfillments'),
+        id: 'name',
+        name: 'name',
+        value: carrier.name,
+        first: true,
+        errors: carrier.getErrors('name'),
+    }) }}
+
+    {{ forms.textField({
+        label: 'Tracking URL' | t('order-fulfillments'),
+        instructions: 'If you include `{trackingNumber}` in the URL, it will be replaced with the fulfillment\'s tracking number.' | t('order-fulfillments'),
+        id: 'trackingUrl',
+        name: 'trackingUrl',
+        type: 'url',
+        value: carrier.trackingUrl,
+        errors: carrier.getErrors('trackingUrl'),
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: 'Enabled' | t('order-fulfillments'),
+        id: 'isEnabled',
+        name: 'isEnabled',
+        on: carrier.isEnabled,
+        errors: carrier.getErrors('name'),
+    }) }}
+{% endblock %}

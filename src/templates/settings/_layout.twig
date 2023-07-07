@@ -1,0 +1,42 @@
+{% extends '_layouts/cp' %}
+
+{% requireAdmin %}
+
+{% if title is not defined %}
+    {% set title = 'Fulfillments' | t('order-fulfillments') %}
+{% endif %}
+
+{% set crumbs = [
+    { label: 'Fulfillments' | t('order-fulfillments'), url: url('order-fulfillments') },
+    { label: 'Settings' | t('order-fulfillments'), url: url('order-fulfillments/settings') },
+    crumb
+] %}
+
+{% set navItems = {
+    'settings': { title: 'General' | t('order-fulfillments'), url: url('order-fulfillments/settings') },
+    'carriers': { title: 'Carriers' | t('order-fulfillments'), url: url('order-fulfillments/settings/carriers'), badge: carriers | length },
+} %}
+
+{% set selectedItem = selectedItem ?? craft.app.request.segments | last %}
+
+{% block sidebar %}
+    <nav>
+        <ul>
+            {% for id, item in navItems %}
+                {% if item.heading is defined %}
+                    <li class="heading"><span>{{ item.heading }}</span></li>
+                {% else %}
+                    <li>
+                        <a href="{{ item.url }}" class="tab {% if id == selectedItem %}sel{% endif %}">
+                            <span class="label">{{ item.title }}</span>
+
+                            {% if item.badge is defined %}
+                                <span class="badge">{{ item.badge }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+{% endblock %}

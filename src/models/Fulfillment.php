@@ -1,6 +1,6 @@
 <?php
 /**
- * Fulfillments plugin for Craft CMS 3.x
+ * Fulfillments plugin for Craft CMS 4.x
  *
  * Add Shopify like fulfillments to your Craft Commerce orders.
  *
@@ -15,7 +15,6 @@ use DateTime;
 use craft\base\Model;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
-use tasdev\orderfulfillments\base\TrackingCarrier;
 use tasdev\orderfulfillments\OrderFulfillments;
 use yii\base\InvalidConfigException;
 
@@ -46,9 +45,9 @@ class Fulfillment extends Model
     public string $trackingNumber;
 
     /**
-     * @var ?string
+     * @var ?int
      */
-    public ?string $trackingCarrierClass;
+    public ?int $trackingCarrierId = null;
 
     /**
      * @var string
@@ -80,6 +79,11 @@ class Fulfillment extends Model
      * @var ?FulfillmentLine[]
      */
     private ?array $_fulfillmentLines = null;
+
+    /**
+     * @var ?Carrier
+     */
+    private ?Carrier $_trackingCarrier = null;
 
 
     // Public Methods
@@ -114,18 +118,30 @@ class Fulfillment extends Model
     /**
      * Gets the selected tracking carrier.
      *
-     * @return ?TrackingCarrier
+     * @return ?Carrier
      */
-    public function getTrackingCarrier(): ?TrackingCarrier
+    public function getTrackingCarrier(): ?Carrier
     {
-        $class = $this->trackingCarrierClass;
-        if (!$class) {
+        if (!$this->trackingCarrierId) {
             return null;
         }
 
-        return new $class([
-            'trackingNumber' => $this->trackingNumber,
-        ]);
+        if ($this->_trackingCarrier) {
+            return $this->_trackingCarrier;
+        }
+
+        return $this->_trackingCarrier = OrderFulfillments::getInstance()->getCarriers()->getCarrierById($this->trackingCarrierId);
+    }
+
+    /**
+     * Gets the tracking URL.
+     *
+     * @return ?string
+     */
+    public function getTrackingUrl(): ?string
+    {
+        $carrier = $this->getTrackingCarrier();
+        return $carrier?->getTrackingUrl($this->trackingNumber);
     }
 
     /**
@@ -168,6 +184,7 @@ class Fulfillment extends Model
         $rules = parent::rules();
 
         $rules[] = ['orderId', 'required'];
+        $rules[] = ['trackingCarrierId', 'required'];
 
         return $rules;
     }

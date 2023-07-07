@@ -1,6 +1,6 @@
 <?php
 /**
- * Fulfillments plugin for Craft CMS 3.x
+ * Fulfillments plugin for Craft CMS 4.x
  *
  * Add Shopify like fulfillments to your Craft Commerce orders.
  *
@@ -184,7 +184,7 @@ class Fulfillments extends Component
 
         $fulfillmentRecord->orderId = $fulfillment->orderId;
         $fulfillmentRecord->trackingNumber = $fulfillment->trackingNumber;
-        $fulfillmentRecord->trackingCarrierClass = $fulfillment->trackingCarrierClass;
+        $fulfillmentRecord->trackingCarrierId = $fulfillment->trackingCarrierId;
 
         if (!$fulfillment->hasErrors()) {
             $db = Craft::$app->getDb();
@@ -283,7 +283,7 @@ class Fulfillments extends Component
                 'id',
                 'orderId',
                 'trackingNumber',
-                'trackingCarrierClass',
+                'trackingCarrierId',
                 'dateCreated',
                 'dateUpdated',
                 'uid',

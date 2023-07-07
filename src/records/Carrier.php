@@ -8,29 +8,31 @@
  * @copyright Copyright (c) 2019 Jayden Smith
  */
 
-namespace tasdev\orderfulfillments\variables;
+namespace tasdev\orderfulfillments\records;
 
-use tasdev\orderfulfillments\OrderFulfillments;
-
-use Craft;
+use craft\db\ActiveRecord;
 
 /**
  * @author    Jayden Smith
  * @package   Fulfillments
  * @since     1.0.0
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $trackingUrl
+ * @property bool $isEnabled
+ * @property int $order
  */
-class FulfillmentsVariable
+class Carrier extends ActiveRecord
 {
-    // Public Methods
+    // Public Static Methods
     // =========================================================================
 
     /**
-     * Get the plugin instance.
-     *
-     * @return OrderFulfillments
+     * @inheritdoc
      */
-    public function getPlugin(): OrderFulfillments
+    public static function tableName()
     {
-        return OrderFulfillments::getInstance();
+        return '{{%orderfulfillments_carriers}}';
     }
 }

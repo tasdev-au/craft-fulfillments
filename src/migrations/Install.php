@@ -1,6 +1,6 @@
 <?php
 /**
- * Fulfillments plugin for Craft CMS 3.x
+ * Fulfillments plugin for Craft CMS 4.x
  *
  * Add Shopify like fulfillments to your Craft Commerce orders.
  *
@@ -14,6 +14,8 @@ use Craft;
 use craft\commerce\models\OrderStatus as OrderStatusModel;
 use craft\commerce\Plugin as Commerce;
 use craft\db\Migration;
+use tasdev\orderfulfillments\models\Carrier;
+use tasdev\orderfulfillments\OrderFulfillments;
 use yii\base\Exception;
 
 /**
@@ -65,7 +67,7 @@ class Install extends Migration
             'id' => $this->primaryKey(),
             'orderId' => $this->integer()->notNull(),
             'trackingNumber' => $this->string(),
-            'trackingCarrierClass' => $this->string(),
+            'trackingCarrierId' => $this->integer(),
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid(),
@@ -80,6 +82,15 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid(),
         ]);
+
+        $this->createTable('{{%orderfulfillments_carriers}}', [
+            'id' => $this->primaryKey(),
+            'name' => $this->string()->notNull(),
+            'trackingUrl' => $this->string()->notNull(),
+            'isEnabled' => $this->boolean()->defaultValue(true),
+            'order' => $this->integer()->defaultValue(999),
+            'uid' => $this->uid(),
+        ]);
     }
 
     /**
@@ -91,6 +102,7 @@ class Install extends Migration
     {
         $this->dropTableIfExists('{{%orderfulfillments_fulfillments}}');
         $this->dropTableIfExists('{{%orderfulfillments_fulfillment_lines}}');
+        $this->dropTableIfExists('{{%orderfulfillments_carriers}}');
 
         return null;
     }
@@ -126,6 +138,56 @@ class Install extends Migration
             ];
             $orderStatus = new OrderStatusModel($data);
             Commerce::getInstance()->getOrderStatuses()->saveOrderStatus($orderStatus, []);
+
+            $defaultCarriers = [
+                [
+                    'name' => 'Australia Post',
+                    'trackingUrl' => 'https://auspost.com.au/mypost/track/#/details/{trackingNumber}',
+                ],
+                [
+                    'name' => 'DHL Australia',
+                    'trackingUrl' => 'https://www.dhl.com/au-en/home/tracking/tracking-freight.html?submit=1&tracking-id={trackingNumber}',
+                ],
+                [
+                    'name' => 'DHL Canada',
+                    'trackingUrl' => 'https://www.dhl.com/ca-en/home/tracking/tracking-freight.html?submit=1&tracking-id={trackingNumber}',
+                ],
+                [
+                    'name' => 'DHL Global Mail',
+                    'trackingUrl' => 'https://webtrack.dhlglobalmail.com/orders?trackingNumber={trackingNumber}',
+                ],
+                [
+                    'name' => 'DHL US',
+                    'trackingUrl' => 'https://www.dhl.com/us-en/home/tracking/tracking-freight.html?submit=1&tracking-id={trackingNumber}',
+                ],
+                [
+                    'name' => 'FedEx',
+                    'trackingUrl' => 'https://www.fedex.com/fedextrack/?trknbr={trackingNumber}',
+                ],
+                [
+                    'name' => 'Sendle',
+                    'trackingUrl' => 'https://track.sendle.com/tracking?ref={trackingNumber}',
+                ],
+                [
+                    'name' => 'StarTrack',
+                    'trackingUrl' => 'https://startrack.com.au/track/details/{trackingNumber}',
+                ],
+                [
+                    'name' => 'UPS',
+                    'trackingUrl' => 'https://www.ups.com/track?loc=en_US&tracknum={trackingNumber}',
+                ],
+                [
+                    'name' => 'USPS',
+                    'trackingUrl' => 'https://tools.usps.com/go/TrackConfirmAction?tLabels={trackingNumber}',
+                ],
+            ];
+
+            foreach ($defaultCarriers as $index => $carrier) {
+                $carrierModel = new Carrier($carrier);
+                $carrierModel->order = $index;
+
+                OrderFulfillments::getInstance()->getCarriers()->saveCarrier($carrierModel);
+            }
         } catch (Exception $e) {
             // Already created.
         }
@@ -139,7 +201,9 @@ class Install extends Migration
     protected function createIndexes(): void
     {
         $this->createIndex(null, '{{%orderfulfillments_fulfillments}}', 'orderId');
+        $this->createIndex(null, '{{%orderfulfillments_fulfillments}}', 'trackingCarrierId');
         $this->createIndex(null, '{{%orderfulfillments_fulfillment_lines}}', 'lineItemId');
+        $this->createIndex(null, '{{%orderfulfillments_fulfillment_lines}}', 'fulfillmentId');
         $this->createIndex(null, '{{%orderfulfillments_fulfillment_lines}}', 'fulfillmentId');
     }
 
@@ -151,6 +215,7 @@ class Install extends Migration
     protected function addForeignKeys(): void
     {
         $this->addForeignKey(null, '{{%orderfulfillments_fulfillments}}', 'orderId', '{{%commerce_orders}}', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey(null, '{{%orderfulfillments_fulfillments}}', 'trackingCarrierId', '{{%orderfulfillments_carriers}}', 'id', 'CASCADE', 'CASCADE');
         $this->addForeignKey(null, '{{%orderfulfillments_fulfillment_lines}}', 'lineItemId', '{{%commerce_lineitems}}', 'id', 'CASCADE', 'CASCADE');
         $this->addForeignKey(null, '{{%orderfulfillments_fulfillment_lines}}', 'fulfillmentId', '{{%orderfulfillments_fulfillments}}', 'id', 'CASCADE', 'CASCADE');
     }
@@ -168,6 +233,10 @@ class Install extends Migration
 
         if ($this->db->tableExists('{{%orderfulfillments_fulfillment_lines}}')) {
             $this->dropAllForeignKeysToTable('{{%orderfulfillments_fulfillment_lines}}');
+        }
+
+        if ($this->db->tableExists('{{%orderfulfillments_carriers}}')) {
+            $this->dropAllForeignKeysToTable('{{%orderfulfillments_carriers}}');
         }
     }
 }

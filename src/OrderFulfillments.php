@@ -1,6 +1,6 @@
 <?php
 /**
- * Fulfillments plugin for Craft CMS 3.x
+ * Fulfillments plugin for Craft CMS 4.x
  *
  * Add Shopify like fulfillments to your Craft Commerce orders.
  *
@@ -12,25 +12,26 @@ namespace tasdev\orderfulfillments;
 
 use Craft;
 use craft\base\Plugin;
+use craft\events\RebuildConfigEvent;
+use craft\services\ProjectConfig;
 use craft\web\twig\variables\CraftVariable;
 use craft\base\Model;
 use craft\commerce\elements\Order;
-use craft\commerce\models\LineItem;
-use craft\commerce\Plugin as Commerce;
 use craft\events\DefineBehaviorsEvent;
 use craft\events\PluginEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\events\TemplateEvent;
-use craft\helpers\ArrayHelper;
 use craft\helpers\UrlHelper;
 use craft\services\Plugins;
 use craft\services\UserPermissions;
 use craft\web\View;
 
+use tasdev\orderfulfillments\helpers\ProjectConfigData;
 use tasdev\orderfulfillments\behaviors\OrderFulfillmentsBehavior;
 use tasdev\orderfulfillments\models\Settings;
 use tasdev\orderfulfillments\plugin\Services;
 use tasdev\orderfulfillments\plugin\Routes;
+use tasdev\orderfulfillments\services\Carriers;
 use tasdev\orderfulfillments\services\Fulfillments as FulfillmentsService;
 use tasdev\orderfulfillments\variables\FulfillmentsVariable;
 
@@ -67,7 +68,7 @@ class OrderFulfillments extends Plugin
     /**
      * @inheritDoc
      */
-    public bool $hasCpSettings = false;
+    public bool $hasCpSettings = true;
 
     /**
      * @inheritDoc
@@ -99,6 +100,7 @@ class OrderFulfillments extends Plugin
         $this->_registerEventHandlers();
         $this->_registerCpRoutes();
         $this->_registerPermissions();
+        $this->_registerProjectConfigEventHandlers();
     }
 
     /**
@@ -107,6 +109,14 @@ class OrderFulfillments extends Plugin
     public function getCpNavItem(): ?array
     {
         return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSettingsResponse(): mixed
+    {
+        return Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('order-fulfillments/settings'));
     }
 
 
@@ -121,21 +131,6 @@ class OrderFulfillments extends Plugin
         return new Settings();
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function settingsHtml(): string
-    {
-        $statuses = Commerce::getInstance()->getOrderStatuses()->getAllOrderStatuses();
-        $statusesArray = [null => '---'];
-        $statusesArray = array_merge($statusesArray, ArrayHelper::map($statuses, 'handle', 'name'));
-
-        return Craft::$app->view->renderTemplate('order-fulfillments/settings', [
-            'settings' => $this->getSettings(),
-            'statuses' => $statusesArray,
-        ]);
-    }
-
 
     // Private Methods
     // =========================================================================
@@ -143,7 +138,7 @@ class OrderFulfillments extends Plugin
     /**
      * Register fulfillments template variable.
      */
-    private function _registerVariable()
+    private function _registerVariable(): void
     {
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function (Event $event) {
             /** @var CraftVariable $variable */
@@ -155,7 +150,7 @@ class OrderFulfillments extends Plugin
     /**
      * Register the event handlers.
      */
-    private function _registerEventHandlers()
+    private function _registerEventHandlers(): void
     {
         // Add fulfillments tab to order edit page.
         Event::on(View::class, View::EVENT_BEFORE_RENDER_PAGE_TEMPLATE, function (TemplateEvent $event) {
@@ -196,7 +191,10 @@ class OrderFulfillments extends Plugin
 
                 $carriers = [];
                 foreach ($this->getCarriers()->getAllCarriers() as $carrier) {
-                    $carriers[$carrier] = (new $carrier)->getName();
+                    $carriers[] = [
+                        'value' => $carrier->id,
+                        'label' => $carrier->name,
+                    ];
                 }
 
                 $context['fulfillmentCarriers'] = $carriers;
@@ -215,7 +213,7 @@ class OrderFulfillments extends Plugin
             if ($event->plugin === $this) {
                 if (Craft::$app->getRequest()->isCpRequest) {
                     Craft::$app->getResponse()->redirect(
-                        UrlHelper::cpUrl('settings/plugins/order-fulfillments')
+                        UrlHelper::cpUrl('order-fulfillments/settings')
                     )->send();
                 }
             }
@@ -225,7 +223,7 @@ class OrderFulfillments extends Plugin
     /**
      * Register Auction Product permissions
      */
-    private function _registerPermissions()
+    private function _registerPermissions(): void
     {
         Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
             $event->permissions[] = [
@@ -236,6 +234,25 @@ class OrderFulfillments extends Plugin
                     'order-fulfillments-deleteFulfillments' => ['label' => Craft::t('order-fulfillments', 'Delete fulfillments')],
                 ],
             ];
+        });
+    }
+
+    /**
+     * Register project config event handlers.
+     */
+    private function _registerProjectConfigEventHandlers(): void
+    {
+        $projectConfigService = Craft::$app->getProjectConfig();
+
+        $carrierService = $this->getCarriers();
+
+        $projectConfigService
+            ->onAdd(Carriers::CONFIG_CARRIERS_KEY . '.{uid}', [$carrierService, 'handleChangedCarrier'])
+            ->onUpdate(Carriers::CONFIG_CARRIERS_KEY . '.{uid}', [$carrierService, 'handleChangedCarrier'])
+            ->onRemove(Carriers::CONFIG_CARRIERS_KEY . '.{uid}', [$carrierService, 'handleDeletedCarrier']);
+
+        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function (RebuildConfigEvent $event) {
+            $event->config['orderfulfillments'] = ProjectConfigData::rebuildProjectConfig();
         });
     }
 }
