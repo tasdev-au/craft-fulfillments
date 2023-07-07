@@ -178,6 +178,7 @@ class Carriers extends Component
             'trackingUrl' => $carrier->trackingUrl,
             'isEnabled' => $carrier->isEnabled,
             'order' => $carrier->order,
+            'legacyClass' => $carrier->legacyClass,
         ];
 
         $configPath = self::CONFIG_CARRIERS_KEY . '.' . $carrierUid;
