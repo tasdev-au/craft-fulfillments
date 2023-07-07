@@ -266,7 +266,10 @@ class Carriers extends Component
             $carrierRecord->trackingUrl = $data['trackingUrl'];
             $carrierRecord->isEnabled = $data['isEnabled'];
             $carrierRecord->order = $data['order'];
-            $carrierRecord->legacyClass = $data['legacyClass'];
+
+            if (isset($data['legacyClass'])) {
+                $carrierRecord->legacyClass = $data['legacyClass'];
+            }
 
             // Save the product type
             $carrierRecord->save(false);

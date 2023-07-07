@@ -52,6 +52,7 @@ class ProjectConfigData
                 'trackingUrl',
                 'isEnabled',
                 'order',
+                'legacyClass',
                 'uid'
             ])
             ->from(['{{%orderfulfillments_carriers}} carriers'])
