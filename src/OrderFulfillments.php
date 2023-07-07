@@ -12,6 +12,7 @@ namespace tasdev\orderfulfillments;
 
 use Craft;
 use craft\base\Plugin;
+use craft\db\Query;
 use craft\events\RebuildConfigEvent;
 use craft\services\ProjectConfig;
 use craft\web\twig\variables\CraftVariable;
@@ -253,6 +254,28 @@ class OrderFulfillments extends Plugin
 
         Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function (RebuildConfigEvent $event) {
             $event->config['orderfulfillments'] = ProjectConfigData::rebuildProjectConfig();
+        });
+
+        Event::on(ProjectConfig::class, ProjectConfig::EVENT_AFTER_APPLY_CHANGES, function () {
+            $fulfillments = (new Query())
+                ->select(['id', 'trackingCarrierClass'])
+                ->from('{{%orderfulfillments_fulfillments}}')
+                ->where(['trackingCarrierId' => null])
+                ->all();
+
+            foreach ($fulfillments as $fulfillment) {
+                $carrier = (new Query())
+                    ->select(['id'])
+                    ->from('{{%orderfulfillments_carriers}}')
+                    ->where(['legacyClass' => $fulfillment['trackingCarrierClass']])
+                    ->one();
+
+                if ($carrier) {
+                    $this->update('{{%orderfulfillments_fulfillments}}', [
+                        'trackingCarrierId' => $carrier['id']
+                    ], ['id' => $fulfillment['id']]);
+                }
+            }
         });
     }
 }

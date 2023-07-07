@@ -88,28 +88,5 @@ class m230707_024911_carriers extends Migration
                 OrderFulfillments::getInstance()->getCarriers()->saveCarrier($newCarrier);
             }
         }
-
-        ProjectConfigHelper::ensureAllSitesProcessed();
-        ProjectConfigHelper::ensureAllFieldsProcessed();
-
-        $fulfillments = (new Query())
-            ->select(['id', 'trackingCarrierClass'])
-            ->from('{{%orderfulfillments_fulfillments}}')
-            ->where(['trackingCarrierId' => null])
-            ->all();
-
-        foreach ($fulfillments as $fulfillment) {
-            $carrier = (new Query())
-                ->select(['id'])
-                ->from('{{%orderfulfillments_carriers}}')
-                ->where(['legacyClass' => $fulfillment['trackingCarrierClass']])
-                ->one();
-
-            if ($carrier) {
-                $this->update('{{%orderfulfillments_fulfillments}}', [
-                    'trackingCarrierId' => $carrier['id']
-                ], ['id' => $fulfillment['id']]);
-            }
-        }
     }
 }
