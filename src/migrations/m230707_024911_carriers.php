@@ -92,6 +92,7 @@ class m230707_024911_carriers extends Migration
         $fulfillments = (new Query())
             ->select(['id', 'trackingCarrierClass'])
             ->from('{{%orderfulfillments_fulfillments}}')
+            ->where(['not', ['trackingCarrierId' => null]])
             ->all();
 
         foreach ($fulfillments as $fulfillment) {
