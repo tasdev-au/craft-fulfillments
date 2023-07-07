@@ -89,6 +89,9 @@ class m230707_024911_carriers extends Migration
             }
         }
 
+        ProjectConfigHelper::ensureAllSitesProcessed();
+        ProjectConfigHelper::ensureAllFieldsProcessed();
+
         $fulfillments = (new Query())
             ->select(['id', 'trackingCarrierClass'])
             ->from('{{%orderfulfillments_fulfillments}}')
