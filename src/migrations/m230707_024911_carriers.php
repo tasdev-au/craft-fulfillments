@@ -31,14 +31,13 @@ class m230707_024911_carriers extends Migration
             'uid' => $this->uid(),
         ]);
 
-        $this->addColumn('{{%orderfulfillments_fulfillments}}', 'trackingCarrierId', $this->integer());
+        $this->alterColumn('{{%orderfulfillments_fulfillments}}', 'trackingCarrierClass', $this->string());
+        $this->addColumn('{{%orderfulfillments_fulfillments}}', 'trackingCarrierId', $this->integer()->after('trackingCarrierClass'));
 
         $this->createIndex(null, '{{%orderfulfillments_fulfillments}}', 'trackingCarrierId');
         $this->addForeignKey(null, '{{%orderfulfillments_fulfillments}}', 'trackingCarrierId', '{{%orderfulfillments_carriers}}', 'id', 'CASCADE', 'CASCADE');
 
         $this->_migrateCarriers();
-
-        $this->dropColumn('{{%orderfulfillments_fulfillments}}', 'trackingCarrierClass');
 
         return true;
     }
@@ -86,6 +85,26 @@ class m230707_024911_carriers extends Migration
                 ]);
 
                 OrderFulfillments::getInstance()->getCarriers()->saveCarrier($newCarrier);
+            }
+        }
+
+        $fulfillments = (new Query())
+            ->select(['id', 'trackingCarrierClass'])
+            ->from('{{%orderfulfillments_fulfillments}}')
+            ->where(['trackingCarrierId' => null])
+            ->all();
+
+        foreach ($fulfillments as $fulfillment) {
+            $carrier = (new Query())
+                ->select(['id'])
+                ->from('{{%orderfulfillments_carriers}}')
+                ->where(['legacyClass' => $fulfillment['trackingCarrierClass']])
+                ->one();
+
+            if ($carrier) {
+                Craft::$app->getDb()->createCommand()->update('{{%orderfulfillments_fulfillments}}', [
+                    'trackingCarrierId' => $carrier['id']
+                ], ['id' => $fulfillment['id']])->execute();
             }
         }
     }

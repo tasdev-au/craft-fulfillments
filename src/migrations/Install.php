@@ -67,6 +67,7 @@ class Install extends Migration
             'id' => $this->primaryKey(),
             'orderId' => $this->integer()->notNull(),
             'trackingNumber' => $this->string(),
+            'trackingCarrierClass' => $this->string(),
             'trackingCarrierId' => $this->integer(),
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),
