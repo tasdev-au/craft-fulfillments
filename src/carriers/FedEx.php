@@ -40,6 +40,6 @@ class FedEx extends TrackingCarrier
      */
     public function getTrackingUrl(): string
     {
-        return "http://www.fedex.com/Tracking?tracknumbers={$this->trackingNumber}";
+        return "https://www.fedex.com/fedextrack/?trknbr={$this->trackingNumber}";
     }
 }
