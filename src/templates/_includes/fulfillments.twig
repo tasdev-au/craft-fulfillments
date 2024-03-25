@@ -67,7 +67,7 @@
                     {{ forms.selectField({
                         label: 'Tracking Carrier' | t('order-fulfillments'),
                         class: 'fullwidth',
-                        value: fulfillment.trackingCarrierClass,
+                        value: fulfillment.trackingCarrierId,
                         options: fulfillmentCarriers,
                         disabled: true
                     }) }}
@@ -78,7 +78,7 @@
                 <div class="field">
                     {{ forms.textField({
                         label: 'Tracking URL' | t('order-fulfillments'),
-                        value: fulfillment.trackingCarrier.trackingUrl,
+                        value: fulfillment.trackingUrl,
                         readonly: true
                     }) }}
                 </div>

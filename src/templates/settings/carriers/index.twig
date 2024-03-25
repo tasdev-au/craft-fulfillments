@@ -1,0 +1,51 @@
+{% extends 'order-fulfillments/settings/_layout' %}
+
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
+{% do view.registerAssetBundle('verbb\\formie\\web\\assets\\cp\\CpAsset') -%}
+
+{% set title = 'Carriers' | t('order-fulfillments') %}
+{% set crumb = { label: title | t('order-fulfillments'), url: url('order-fulfillments/settings/carriers') } %}
+
+{% block action %}
+    <a href="{{ url('order-fulfillments/settings/carriers/new') }}" class="btn submit add icon">{{ 'New Carrier' | t('order-fulfillments') }}</a>
+{% endblock %}
+
+{% block content %}
+    <div id="carriers-vue-admin-table"></div>
+
+    {% set tableData = [] %}
+    {% for carrier in carriers %}
+        {% set tableData = tableData | merge([{
+            id: carrier.id,
+            labelHtml: {
+                url: carrier.cpEditUrl,
+                html: carrier.name,
+                enabled: carrier.isEnabled,
+            },
+            title: carrier.name | t('order-fulfillments'),
+            url: carrier.cpEditUrl
+        }]) %}
+    {% endfor %}
+
+    {% js %}
+        var columns = [
+            {
+                name: 'labelHtml',
+                title: Craft.t('app', 'Name'),
+                callback: function(value) {
+                    return '<a class="cell-bold" href="' + value.url + '"><span class="status ' + (value.enabled ? 'green' : '') + '"></span>' + value.html + '</a>';
+                }
+            }
+        ];
+
+        new Craft.VueAdminTable({
+            columns: columns,
+            container: '#carriers-vue-admin-table',
+            deleteAction: 'order-fulfillments/plugin/delete-carrier',
+            reorderAction: 'order-fulfillments/plugin/reorder-carriers',
+            reorderSuccessMessage: Craft.t('order-fulfillments', 'Carriers reordered.'),
+            reorderFailMessage: Craft.t('order-fulfillments', 'Couldn’t reorder carriers.'),
+            tableData: {{ tableData | json_encode | raw }},
+        });
+    {% endjs %}
+{% endblock %}

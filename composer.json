@@ -2,7 +2,7 @@
     "name": "tasdev-au/craft-fulfillments",
     "description": "Add Shopify like fulfillments to your Craft Commerce orders.",
     "type": "craft-plugin",
-    "version": "4.0.2",
+    "version": "4.1.0",
     "keywords": [
         "craft",
         "cms",

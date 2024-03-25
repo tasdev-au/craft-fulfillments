@@ -1,6 +1,6 @@
 <?php
 /**
- * Fulfillments plugin for Craft CMS 3.x
+ * Fulfillments plugin for Craft CMS 4.x
  *
  * Add Shopify like fulfillments to your Craft Commerce orders.
  *
@@ -143,7 +143,7 @@ class FulfillmentsController extends Controller
 
         $fulfillmentLines = $request->getParam('fulfillmentLines');
         $fulfillment->trackingNumber = $request->getParam('trackingNumber');
-        $fulfillment->trackingCarrierClass = $request->getParam('trackingCarrierClass');
+        $fulfillment->trackingCarrierId = $request->getParam('trackingCarrierId');
 
         if ($fulfillmentLines) {
             foreach ($fulfillmentLines as $lineItemId => $qty) {

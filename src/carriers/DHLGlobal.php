@@ -1,6 +1,6 @@
 <?php
 /**
- * Fulfillments plugin for Craft CMS 3.x
+ * Fulfillments plugin for Craft CMS 4.x
  *
  * Add Shopify like fulfillments to your Craft Commerce orders.
  *
@@ -17,6 +17,7 @@ use tasdev\orderfulfillments\base\TrackingCarrier;
  * @author    Jayden Smith
  * @package   Fulfillments
  * @since     1.0.0
+ * @deprecated 4.1.0
  */
 class DHLGlobal extends TrackingCarrier
 {

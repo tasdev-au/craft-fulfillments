@@ -48,7 +48,7 @@ export default Garnish.Modal.extend({
                         <div class="heading"><label>Tracking Carrier</label></div>
                         <div class="input ltr">
                             <div class="select fullwidth">
-                                <select class="select" name="trackingCarrierClass">${this._getCarriers(carriers)}</select>
+                                <select class="select" name="trackingCarrierId">${this._getCarriers(carriers)}</select>
                             </div>
                         </div>
                     </div>
@@ -112,10 +112,8 @@ export default Garnish.Modal.extend({
     _getCarriers(carriers) {
         let html = '';
 
-        for (const carrier in carriers) {
-            if (carriers.hasOwnProperty(carrier)) {
-                html += `<option value="${carrier}">${carriers[carrier]}</option>`;
-            }
+        for (const carrier of carriers) {
+            html += `<option value="${carrier.value}">${carrier.label}</option>`;
         }
 
         return html;

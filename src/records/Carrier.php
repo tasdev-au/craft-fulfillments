@@ -18,11 +18,13 @@ use craft\db\ActiveRecord;
  * @since     1.0.0
  *
  * @property int $id
- * @property int $fulfillmentId
- * @property int $lineItemId
- * @property int $fulfilledQty
+ * @property string $name
+ * @property string $trackingUrl
+ * @property bool $isEnabled
+ * @property int $order
+ * @property string $legacyClass
  */
-class FulfillmentLine extends ActiveRecord
+class Carrier extends ActiveRecord
 {
     // Public Static Methods
     // =========================================================================
@@ -32,6 +34,6 @@ class FulfillmentLine extends ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%orderfulfillments_fulfillment_lines}}';
+        return '{{%orderfulfillments_carriers}}';
     }
 }

@@ -11,25 +11,25 @@
 namespace tasdev\orderfulfillments\events;
 
 use craft\events\CancelableEvent;
-use tasdev\orderfulfillments\models\FulfillmentLine;
+use tasdev\orderfulfillments\models\Carrier;
 
 /**
  * @author    Jayden Smith
  * @package   Fulfillments
- * @since     1.0.0
+ * @since     4.1.0
  */
-class FulfillmentLineEvent extends CancelableEvent
+class CarrierEvent extends CancelableEvent
 {
     // Properties
     // =========================================================================
 
     /**
-     * @var FulfillmentLine The fulfillment line model.
+     * @var Carrier The carrier model.
      */
-    public FulfillmentLine $fulfillmentLine;
+    public Carrier $carrier;
 
     /**
-     * @var bool If this is a new fulfillment.
+     * @var bool If this is a new carrier.
      */
     public bool $isNew = false;
 }

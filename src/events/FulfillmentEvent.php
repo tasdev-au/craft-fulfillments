@@ -1,6 +1,6 @@
 <?php
 /**
- * Fulfillments plugin for Craft CMS 3.x
+ * Fulfillments plugin for Craft CMS 4.x
  *
  * Add Shopify like fulfillments to your Craft Commerce orders.
  *
