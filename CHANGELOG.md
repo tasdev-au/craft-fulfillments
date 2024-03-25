@@ -4,10 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 4.1.0 beta 1 - 2023-07-07
+## 4.1.0 - 2024-03-26
 ### Changed
 - Shipping carriers are now saved in the project config. This means that if you are adding customer carriers, you may need to reconfigure them.
-- To get your tracking URL in emails etc, you should now use `fulfillment.trackingUrl` instead of `fulfillment.shippingCarrier.trackingUrl`.
+- To get your tracking URL in emails etc., you should now use `fulfillment.trackingUrl` instead of `fulfillment.shippingCarrier.trackingUrl`.
 
 ## 4.0.1 - 2023-06-01
 ### Fixed
