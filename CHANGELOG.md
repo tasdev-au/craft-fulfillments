@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0-beta.1 - 2024-03-26
+### Added
+- Craft 5/Commerce 5 support.
+- Please ensure you have updated to the latest version of Fulfillments on Craft 4/Commerce 4 before upgrading to this version.
+
 ## 4.1.0 - 2024-03-26
 ### Changed
 - Shipping carriers are now saved in the project config. This means that if you are adding customer carriers, you may need to reconfigure them.
