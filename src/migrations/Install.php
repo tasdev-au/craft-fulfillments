@@ -1,6 +1,6 @@
 <?php
 /**
- * Fulfillments plugin for Craft CMS 4.x
+ * Fulfillments plugin for Craft CMS 5.x
  *
  * Add Shopify like fulfillments to your Craft Commerce orders.
  *
@@ -123,10 +123,17 @@ class Install extends Migration
     public function insertDefaultData()
     {
         try {
+            $stores = Commerce::getInstance()->getStores()->getAllStores()->all();
+
+            if (empty($stores)) {
+                return;
+            }
+
             $data = [
                 'name' => 'Fulfilled',
                 'handle' => 'fulfilled',
                 'color' => 'yellow',
+                'storeId' => $stores[0]->id,
                 'default' => false
             ];
             $orderStatus = new OrderStatusModel($data);
@@ -136,6 +143,7 @@ class Install extends Migration
                 'name' => 'Partially Fulfilled',
                 'handle' => 'partiallyFulfilled',
                 'color' => 'purple',
+                'storeId' => $stores[0]->id,
                 'default' => false
             ];
             $orderStatus = new OrderStatusModel($data);

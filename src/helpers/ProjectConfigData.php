@@ -1,6 +1,6 @@
 <?php
 /**
- * Fulfillments plugin for Craft CMS 4.x
+ * Fulfillments plugin for Craft CMS 5.x
  *
  * Add Shopify like fulfillments to your Craft Commerce orders.
  *
@@ -52,7 +52,6 @@ class ProjectConfigData
                 'trackingUrl',
                 'isEnabled',
                 'order',
-                'legacyClass',
                 'uid'
             ])
             ->from(['{{%orderfulfillments_carriers}} carriers'])

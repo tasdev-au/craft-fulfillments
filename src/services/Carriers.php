@@ -1,6 +1,6 @@
 <?php
 /**
- * Fulfillments plugin for Craft CMS 4.x
+ * Fulfillments plugin for Craft CMS 5.x
  *
  * Add Shopify like fulfillments to your Craft Commerce orders.
  *
@@ -178,7 +178,6 @@ class Carriers extends Component
             'trackingUrl' => $carrier->trackingUrl,
             'isEnabled' => $carrier->isEnabled,
             'order' => $carrier->order,
-            'legacyClass' => $carrier->legacyClass,
         ];
 
         $configPath = self::CONFIG_CARRIERS_KEY . '.' . $carrierUid;
@@ -268,10 +267,6 @@ class Carriers extends Component
             $carrierRecord->isEnabled = $data['isEnabled'];
             $carrierRecord->order = $data['order'];
 
-            if (isset($data['legacyClass'])) {
-                $carrierRecord->legacyClass = $data['legacyClass'];
-            }
-
             // Save the product type
             $carrierRecord->save(false);
 
@@ -340,7 +335,6 @@ class Carriers extends Component
                 'trackingUrl',
                 'isEnabled',
                 'order',
-                'legacyClass',
                 'uid'
             ])
             ->orderBy('order')

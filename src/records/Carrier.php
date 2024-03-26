@@ -1,6 +1,6 @@
 <?php
 /**
- * Fulfillments plugin for Craft CMS 4.x
+ * Fulfillments plugin for Craft CMS 5.x
  *
  * Add Shopify like fulfillments to your Craft Commerce orders.
  *
@@ -22,7 +22,6 @@ use craft\db\ActiveRecord;
  * @property string $trackingUrl
  * @property bool $isEnabled
  * @property int $order
- * @property string $legacyClass
  */
 class Carrier extends ActiveRecord
 {
