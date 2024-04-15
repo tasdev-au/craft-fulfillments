@@ -58,7 +58,7 @@ class Carrier extends Model
     /**
      * @var ?string
      */
-    public ?string $legacyClass;
+    public ?string $legacyClass = null;
 
 
     // Public Methods
