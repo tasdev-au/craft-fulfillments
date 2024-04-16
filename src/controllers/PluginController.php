@@ -16,6 +16,7 @@ use craft\helpers\ArrayHelper;
 use craft\helpers\Json;
 use craft\web\Controller;
 use craft\commerce\Plugin as Commerce;
+use tasdev\orderfulfillments\models\Carrier;
 use tasdev\orderfulfillments\OrderFulfillments;
 use tasdev\orderfulfillments\models\Settings;
 use yii\web\ForbiddenHttpException;
@@ -66,16 +67,24 @@ class PluginController extends Controller
         ]);
     }
 
-    public function actionEditCarrier(int $carrierId): Response
+    public function actionEditCarrier(int|null $carrierId = null): Response
     {
         if (!Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
             throw new ForbiddenHttpException('Administrative changes are disallowed in this environment.');
         }
 
-        $carrier = OrderFulfillments::getInstance()->getCarriers()->getCarrierById($carrierId);
+        if ($carrierId) {
+            $carrier = OrderFulfillments::getInstance()->getCarriers()->getCarrierById($carrierId);
+            $isNew = false;
+        } else {
+            $carrier = new Carrier();
+            $isNew = true;
+        }
+
         $carriers = OrderFulfillments::getInstance()->getCarriers()->getAllCarriers();
 
         return $this->renderTemplate('order-fulfillments/settings/carriers/_edit', [
+            'isNew' => $isNew,
             'carrier' => $carrier,
             'carriers' => $carriers,
         ]);
@@ -92,7 +101,11 @@ class PluginController extends Controller
         $request = Craft::$app->getRequest();
         $carrierId = $request->getBodyParam('carrierId');
 
-        $carrier = OrderFulfillments::getInstance()->getCarriers()->getCarrierById($carrierId);
+        if ($carrierId) {
+            $carrier = OrderFulfillments::getInstance()->getCarriers()->getCarrierById($carrierId);
+        } else {
+            $carrier = new Carrier();
+        }
 
         $carrier->name = $request->getBodyParam('name', $carrier->name);
         $carrier->trackingUrl = $request->getBodyParam('trackingUrl', $carrier->trackingUrl);

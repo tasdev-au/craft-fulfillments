@@ -6,7 +6,7 @@
 {% set title = 'Carriers' | t('order-fulfillments') %}
 {% set crumb = { label: title | t('order-fulfillments'), url: url('order-fulfillments/settings/carriers') } %}
 
-{% block action %}
+{% block actionButton %}
     <a href="{{ url('order-fulfillments/settings/carriers/new') }}" class="btn submit add icon">{{ 'New Carrier' | t('order-fulfillments') }}</a>
 {% endblock %}
 

@@ -35,6 +35,7 @@ trait Routes
             $event->rules = array_merge($event->rules, [
                 'order-fulfillments/settings' => 'order-fulfillments/plugin/settings',
                 'order-fulfillments/settings/carriers' => 'order-fulfillments/plugin/carriers',
+                'order-fulfillments/settings/carriers/new' => 'order-fulfillments/plugin/edit-carrier',
                 'order-fulfillments/settings/carriers/<carrierId:\d+>' => 'order-fulfillments/plugin/edit-carrier',
             ]);
         });

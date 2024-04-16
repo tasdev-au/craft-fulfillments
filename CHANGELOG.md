@@ -4,10 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0-beta.2 - 2024-04-16
+### Fixed
+- Fixed issue preventing the creation of new carriers.
+
 ## 5.0.0-beta.1 - 2024-03-26
 ### Added
 - Craft 5/Commerce 5 support.
 - Please ensure you have updated to the latest version of Fulfillments on Craft 4/Commerce 4 before upgrading to this version.
+
+## 4.1.2 - 2024-04-16
+### Fixed
+- Fixed issue preventing the creation of new carriers.
+
+## 4.1.1 - 2024-04-16
+### Fixed
+- Fixed issue installing the plugin on Craft 4.
 
 ## 4.1.0 - 2024-03-26
 ### Changed

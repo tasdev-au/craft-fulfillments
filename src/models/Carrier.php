@@ -33,12 +33,12 @@ class Carrier extends Model
     /**
      * @var string
      */
-    public string $name;
+    public string $name = '';
 
     /**
      * @var string
      */
-    public string $trackingUrl;
+    public string $trackingUrl = '';
 
     /**
      * @var bool
