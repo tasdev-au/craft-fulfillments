@@ -148,6 +148,6 @@ class PluginController extends Controller
             return $this->asJson(['success' => true]);
         }
 
-        return $this->asJson(['error' => Craft::t('formie', 'Couldn’t reorder templates.')]);
+        return $this->asJson(['error' => Craft::t('order-fulfillments', 'Couldn’t reorder templates.')]);
     }
 }
