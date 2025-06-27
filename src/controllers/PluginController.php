@@ -41,7 +41,7 @@ class PluginController extends Controller
         /* @var Settings $settings */
         $settings = OrderFulfillments::getInstance()->getSettings();
 
-        $statuses = Commerce::getInstance()->getOrderStatuses()->getAllOrderStatuses();
+        $statuses = Commerce::getInstance()->getOrderStatuses()->getAllOrderStatuses()->toArray();
         $statusesArray = [null => '---'];
         $statusesArray = array_merge($statusesArray, ArrayHelper::map($statuses, 'handle', 'name'));
 
