@@ -198,9 +198,10 @@ class Fulfillment extends Model
 
         if (is_array($this->_fulfillmentLines)) {
             foreach ($this->_fulfillmentLines as $fulfillmentLine) {
-                $fulfillmentLine->validate();
+                // Lines get their fulfillment ID when the fulfillment is saved.
+                $attributes = array_diff($fulfillmentLine->activeAttributes(), ['fulfillmentId']);
 
-                if ($fulfillmentLine->hasErrors()) {
+                if (!$fulfillmentLine->validate($attributes)) {
                     $hasErrors = true;
                 }
             }
@@ -215,8 +216,8 @@ class Fulfillment extends Model
 
     private function _fetchFulfillmentLines()
     {
-        if (!$this->_fulfillmentLines) {
-            $this->_fulfillmentLines = OrderFulfillments::getInstance()->getFulfillmentLines()->getFulfillmentLinesByFulfillment($this);
+        if ($this->_fulfillmentLines === null) {
+            $this->_fulfillmentLines = $this->id ? OrderFulfillments::getInstance()->getFulfillmentLines()->getFulfillmentLinesByFulfillment($this) : [];
         }
     }
 }

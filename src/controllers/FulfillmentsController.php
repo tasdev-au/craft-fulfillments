@@ -17,10 +17,6 @@ use craft\commerce\Plugin as Commerce;
 use tasdev\orderfulfillments\OrderFulfillments;
 use tasdev\orderfulfillments\models\Fulfillment;
 use Throwable;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
-use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
@@ -36,37 +32,21 @@ class FulfillmentsController extends Controller
     // =========================================================================
 
     /**
-     * Returns the modal form.
-     *
-     * @return Response|null
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     * @throws Exception
-     */
-    public function actionGetHtml(): ?Response
-    {
-        $fulfillment = $this->_buildFulfillmentFromPost();
-
-        return $this->asJson([
-            'html' => $this->_getFulfillmentFormHtml($fulfillment),
-        ]);
-    }
-
-    /**
      * Saves the fulfillment.
      *
      * @throws Throwable
      */
-    public function actionSave()
+    public function actionSave(): Response
     {
-        $fulfillment = $this->_buildFulfillmentFromPost();
-        $fulfillment->validate();
+        $this->requirePostRequest();
+        $this->requirePermission('order-fulfillments-createFulfillments');
 
-        if ($fulfillment->hasErrors() || !OrderFulfillments::getInstance()->getFulfillments()->saveFulfillment($fulfillment, false)) {
+        $fulfillment = $this->_buildFulfillmentFromPost();
+
+        if (!OrderFulfillments::getInstance()->getFulfillments()->saveFulfillment($fulfillment)) {
             return $this->asJson([
                 'success' => false,
-                'html' => $this->_getFulfillmentFormHtml($fulfillment),
+                'error' => $this->_getErrorSummary($fulfillment),
             ]);
         }
 
@@ -100,22 +80,22 @@ class FulfillmentsController extends Controller
     // =========================================================================
 
     /**
-     * Renders the modal form HTML.
+     * Joins the fulfillment's errors into one message, naming the item for each line error.
      *
      * @param Fulfillment $fulfillment
      * @return string
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     * @throws Exception
      */
-    private function _getFulfillmentFormHtml(Fulfillment $fulfillment): string
+    private function _getErrorSummary(Fulfillment $fulfillment): string
     {
-        $view = Craft::$app->getView();
+        $errors = array_values($fulfillment->getFirstErrors());
 
-        return $view->renderTemplate('order-fulfillments/_modals/create-fulfillment', [
-            'fulfillment' => $fulfillment,
-        ]);
+        foreach ($fulfillment->getFulfillmentLines() as $fulfillmentLine) {
+            foreach ($fulfillmentLine->getFirstErrors() as $error) {
+                $errors[] = $fulfillmentLine->getLineItem() ? "$fulfillmentLine: $error" : $error;
+            }
+        }
+
+        return implode("\n", $errors);
     }
 
     /**
@@ -141,26 +121,21 @@ class FulfillmentsController extends Controller
 
         $fulfillment = OrderFulfillments::getInstance()->getFulfillments()->createFulfillment($orderId);
 
-        $fulfillmentLines = $request->getParam('fulfillmentLines');
+        $fulfillmentLines = $request->getRequiredBodyParam('fulfillmentLines');
         $fulfillment->trackingNumber = $request->getParam('trackingNumber');
         $fulfillment->trackingCarrierId = $request->getParam('trackingCarrierId');
 
-        if ($fulfillmentLines) {
-            foreach ($fulfillmentLines as $lineItemId => $qty) {
-                $qtyInt = intval($qty);
-                $lineItem = Commerce::getInstance()->getLineItems()->getLineItemById($lineItemId);
+        foreach ($fulfillmentLines as $lineItemId => $qty) {
+            $lineItem = Commerce::getInstance()->getLineItems()->getLineItemById($lineItemId);
 
-                $fulfillmentLine = $fulfillmentLinesService->createFulfillmentLine($lineItem, $qtyInt);
-                $fulfillment->addFulfillmentLine($fulfillmentLine);
+            if (!$lineItem) {
+                throw new BadRequestHttpException(Craft::t('order-fulfillments', 'No line item found for ID {lineItemId}.', [
+                    'lineItemId' => $lineItemId
+                ]));
             }
-        } else {
-            $order = $fulfillment->getOrder();
 
-            foreach ($order->getLineItems() as $lineItem) {
-                $fulfillableQty = $fulfillmentLinesService->getFulfillableQty($lineItem, true);
-                $fulfillmentLine = $fulfillmentLinesService->createFulfillmentLine($lineItem, $fulfillableQty);
-                $fulfillment->addFulfillmentLine($fulfillmentLine);
-            }
+            $fulfillmentLine = $fulfillmentLinesService->createFulfillmentLine($lineItem, intval($qty));
+            $fulfillment->addFulfillmentLine($fulfillmentLine);
         }
 
         return $fulfillment;

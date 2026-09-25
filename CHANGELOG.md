@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.2 - 2026-09-25
+### Fixed
+- Fixed new fulfillments skipping line quantity validation, which allowed over-fulfilling items.
+- Fixed re-saving a fulfillment failing validation against its own saved quantities.
+- Fixed a fulfillment line for a deleted line item causing an error instead of a validation error.
+- Fixed a fulfillment being kept without its lines when a line failed to save.
+- Fixed users without the “Create fulfillments” permission being able to create fulfillments.
+- Fixed the create fulfillment modal showing “undefined” instead of the validation error.
+
+### Removed
+- Removed the unused `order-fulfillments/fulfillments/get-html` action and its template.
+
 ## 5.0.1 - 2025-06-27
 ### Fixed
 - Fixed issue preventing access of settings.

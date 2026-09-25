@@ -152,21 +152,48 @@ class FulfillmentLine extends Model
     {
         return [
             [['fulfillmentId', 'lineItemId', 'fulfilledQty'], 'required'],
+            ['lineItemId', function($attribute) {
+                if (!$this->getLineItem()) {
+                    $this->addError($attribute, Craft::t('order-fulfillments', 'This item is no longer on the order.'));
+                }
+            }],
             ['fulfilledQty', function($attribute) {
+                $lineItem = $this->getLineItem();
+
+                if (!$lineItem) {
+                    return;
+                }
+
                 $maxQty = OrderFulfillments::getInstance()
                     ->getFulfillmentLines()
-                    ->getFulfillableQty($this->getLineItem());
+                    ->getFulfillableQty($lineItem) + $this->_getSavedQty();
 
                 if ($this->$attribute > $maxQty) {
                     $this->addError($attribute, Craft::t('order-fulfillments', 'You can only fulfill {number} of this item.', [
                         'number' => $maxQty
                     ]));
                 } else if ($this->$attribute < 0) {
-                    $this->addError($attribute, Craft::t('order-fulfillments', 'The minimum fulfullable quantity is 0.', [
-                        'number' => $maxQty
-                    ]));
+                    $this->addError($attribute, Craft::t('order-fulfillments', 'The minimum fulfillable quantity is 0.'));
                 }
             }]
         ];
+    }
+
+
+    // Private Methods
+    // =========================================================================
+
+    /**
+     * Gets the quantity this line already has saved, which the fulfillable quantity already excludes.
+     *
+     * @return int
+     */
+    private function _getSavedQty(): int
+    {
+        if (!$this->id) {
+            return 0;
+        }
+
+        return OrderFulfillments::getInstance()->getFulfillmentLines()->getFulfillmentLineById($this->id)?->fulfilledQty ?? 0;
     }
 }

@@ -164,8 +164,8 @@ class Fulfillments extends Component
             $fulfillmentRecord = FulfillmentRecord::findOne($fulfillment->id);
 
             if (!$fulfillmentRecord) {
-                throw new Exception(Craft::t('order-fulfillments', 'No fulfillments exists with the ID “{id}”',
-                    ['id' => $fulfillmentRecord->id]));
+                throw new Exception(Craft::t('order-fulfillments', 'No fulfillment exists with the ID “{id}”',
+                    ['id' => $fulfillment->id]));
             }
         }
 
@@ -198,7 +198,17 @@ class Fulfillments extends Component
                         $fulfillment->id = $fulfillmentRecord->id;
                     }
 
+                    foreach ($fulfillment->getFulfillmentLines() as $fulfillmentLine) {
+                        if ($fulfillmentLine->id || $fulfillmentLine->fulfilledQty > 0) {
+                            $fulfillmentLine->fulfillmentId = $fulfillment->id;
+                            // Lines were validated with the fulfillment.
+                            OrderFulfillments::getInstance()->getFulfillmentLines()->saveFulfillmentLine($fulfillmentLine, false);
+                        }
+                    }
+
                     $transaction->commit();
+                } else {
+                    $transaction->rollBack();
                 }
             } catch (Throwable $e) {
                 $transaction->rollBack();
@@ -207,13 +217,6 @@ class Fulfillments extends Component
             }
 
             if ($success) {
-                foreach ($fulfillment->getFulfillmentLines() as $fulfillmentLine) {
-                    if (!!$fulfillmentLine->id || $fulfillmentLine->fulfilledQty > 0) {
-                        $fulfillmentLine->fulfillmentId = $fulfillment->id;
-                        OrderFulfillments::getInstance()->getFulfillmentLines()->saveFulfillmentLine($fulfillmentLine);
-                    }
-                }
-
                 // Update order status.
                 $order = $fulfillment->getOrder();
 

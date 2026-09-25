@@ -256,8 +256,8 @@ class FulfillmentLines extends Component
             $fulfillmentLineRecord = FulfillmentLineRecord::findOne($fulfillmentLine->id);
 
             if (!$fulfillmentLineRecord) {
-                throw new Exception(Craft::t('auctions', 'No fulfillment lines exists with the ID “{id}”',
-                    ['id' => $fulfillmentLineRecord->id]));
+                throw new Exception(Craft::t('order-fulfillments', 'No fulfillment line exists with the ID “{id}”',
+                    ['id' => $fulfillmentLine->id]));
             }
         }
 
